@@ -3,6 +3,6 @@
 
 class Block {
   // 4 bytes
-  unsigned int assignedBytes;
+  unsigned int usedBytes;
   char rawData[FREE_SIZE];
-}
+};

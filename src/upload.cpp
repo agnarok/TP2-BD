@@ -2,30 +2,13 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include "Block.h"
+#include "Line.h"
 
 // #define LARGE_PRIME 6700417
 #define LARGE_PRIME 5
 
-
 using namespace std;
-
-// data esta como string, nao sei o melhor jeito.
-class Line {
- public:
-  int id, ano, citacoes;
-  string titulo, autores, atualiz, snippet;
-  Line(){};
-  Line(int id, string titulo, int ano, string autores, int citacoes,
-       string atualiz, string snippet) {
-    this->id = id;
-    this->titulo = titulo;
-    this->ano = ano;
-    this->autores = autores;
-    this->citacoes = citacoes;
-    this->atualiz = atualiz;
-    this->snippet = snippet;
-  }
-};
 
 class CsvReader {
  public:
@@ -49,15 +32,20 @@ class CsvReader {
   }
 };
 
-// a funcao hash encontra o bucket que um dado registro está. O número do bucket pode ser multiplicado por um offset (bytes) para encontrar o inicio do bucket.
-void createHashFile(const char *path) {
-  FILE *file = fopen(path, "wb+");
-
-  for (int i = 0; i < LARGE_PRIME; i++) {
-    
+// a funcao hash encontra o bucket que um dado registro está. O número do bucket
+// pode ser multiplicado por um offset (bytes) para encontrar o inicio do
+// bucket.
+void createHashFile(const char* path) {
+  FILE* file = fopen(path, "wb+");
+  Block placeHolder;
+  try {
+    for (int i = 0; i < LARGE_PRIME; i++) {
+      fwrite(&placeHolder, BLOCK_SIZE, 1, file);
+    }
+    fclose(file);
+  } catch (const std::exception& e) {
+    std::cerr << e.what() << '\n';
   }
-  
-
 }
 
 int calculateHash(int id) { return id % LARGE_PRIME; }
@@ -70,9 +58,13 @@ int main(int argc, char const* argv[]) {
   }
   CsvReader reader(argv[1]);
   Line line;
+
+  createHashFile("../data/sample_file.hash");
+
   while (!reader.isAtEndOfFile()) {
     line = reader.getNextFormattedLine();
     cout << "linha: " << calculateHash(line.id) << endl;
   }
+  
   return 0;
 }
