@@ -1,0 +1,8 @@
+
+entrada\.csv
+
+upload
+
+*.csv#
+
+\.vscode/settings\.json
