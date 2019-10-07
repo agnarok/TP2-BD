@@ -3,10 +3,10 @@
 #include <sstream>
 #include <vector>
 #include "Block.h"
-#include "Line.h"
+#include "definitions.h"
 
-// #define LARGE_PRIME 6700417
-#define LARGE_PRIME 5
+//./upload ../data/sample_small.csv
+
 
 using namespace std;
 
@@ -26,6 +26,7 @@ class CsvReader {
     while (std::getline(std::getline(s1, word, '"'), word, '"')) {
       lineIn.push_back(word);
     }
+
     Line out(stoi(lineIn[0]), lineIn[1], stoi(lineIn[2]), lineIn[3],
              stoi(lineIn[4]), lineIn[5], lineIn[6]);
     return out;
@@ -58,13 +59,16 @@ int main(int argc, char const* argv[]) {
   }
   CsvReader reader(argv[1]);
   Line line;
+  Block block;
 
   createHashFile("../data/sample_file.hash");
 
   while (!reader.isAtEndOfFile()) {
     line = reader.getNextFormattedLine();
-    cout << "linha: " << calculateHash(line.id) << endl;
+    cout << "linha: " << line.id << endl;
   }
+  // cout << endl << &block << endl;
+  block.insertItem(line);
   
   return 0;
 }

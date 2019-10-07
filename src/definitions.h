@@ -1,0 +1,2 @@
+// #define LARGE_PRIME 6700417
+#define LARGE_PRIME 5

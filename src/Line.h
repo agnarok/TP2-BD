@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 
@@ -11,14 +12,15 @@ class Line {
   char atualiz[50]; 
   char snippet[1024];
   Line(){};
-  Line(int id, char titulo[], int ano, char autores[], int citacoes,
-       char atualiz[], char snippet[]) {
+  Line(int id, string titulo, int ano, string autores, int citacoes,
+       string atualiz, string snippet) {
     this->id = id;
     this->ano = ano;
     this->citacoes = citacoes;
-    memcpy(this->titulo,titulo,sizeof(titulo));
-    memcpy(this->autores,autores,sizeof(autores));
-    memcpy(this->atualiz,atualiz,sizeof(atualiz));
-    memcpy(this->snippet,snippet,sizeof(snippet));
+
+    memcpy(this->titulo,titulo.c_str(),300);
+    memcpy(this->autores,autores.c_str(),150);
+    memcpy(this->atualiz,atualiz.c_str(),50);
+    memcpy(this->snippet,snippet.c_str(),1024);
   }
 };
