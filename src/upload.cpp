@@ -7,7 +7,6 @@
 
 //./upload ../data/sample_small.csv
 
-
 using namespace std;
 
 class CsvReader {
@@ -53,6 +52,7 @@ int calculateHash(int id) { return id % LARGE_PRIME; }
 
 // o primeiro argumento de argv e o proprio arquivo
 int main(int argc, char const* argv[]) {
+  cout << endl << argv[1] << endl;
   if (argc == 1) {
     cout << "No input file -- exiting." << endl;
     return 0;
@@ -60,15 +60,19 @@ int main(int argc, char const* argv[]) {
   CsvReader reader(argv[1]);
   Line line;
   Block block;
-
-  createHashFile("../data/sample_file.hash");
+  createHashFile(SMALL_HASH_FILE_PATH);
 
   while (!reader.isAtEndOfFile()) {
     line = reader.getNextFormattedLine();
+    if (!block.insertItem(line)) {
+      cout << endl << "n buto" << endl;
+      // bloco cheio
+      break;
+    }
     cout << "linha: " << line.id << endl;
   }
-  // cout << endl << &block << endl;
-  block.insertItem(line);
-  
+  Line* lineout = block.getItem(2);
+  cout << "linhaLida: " << lineout->id << endl;
+
   return 0;
 }

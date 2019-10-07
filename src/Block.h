@@ -9,5 +9,5 @@ class Block {
   char rawData[FREE_SIZE];
  public:
   bool insertItem(const Line);
-  Line getItem(int id);
+  Line* getItem(unsigned int id);
 };
