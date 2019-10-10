@@ -53,6 +53,6 @@ int main(int argc, char const* argv[]) {
   }
   Line *pLine = hash.getLineFromBlock(4);
   cout << endl << pLine->id << endl;
-
+  hash.closeFile();
   return 0;
 }

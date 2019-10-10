@@ -29,11 +29,14 @@ void HashFile::commitInsertion(int offset, Block *outputBlock) {
  */
 bool HashFile::insertItem(Line &line) {
   int inputBucket = calculateHash(line.id);
+  cout << inputBucket << endl;
   int offset = inputBucket * BUCKET_SIZE;
   Block outputBlock;
   fseek(this->file, offset, SEEK_SET);
 
+//  TODO: AQUI AINDA PARA DE LER POR ALGUM MOTIVO
   if (!fread(&outputBlock, sizeof(Block), 1, this->file)) {
+    cout << "deu muito ruim" << endl;
     return false;
   }
   if (outputBlock.insertItem(line)) {
