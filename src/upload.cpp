@@ -2,8 +2,8 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include "Block.h"
 #include "definitions.h"
+#include "hashFile.h"
 
 //./upload ../data/sample_small.csv
 
@@ -32,23 +32,6 @@ class CsvReader {
   }
 };
 
-// a funcao hash encontra o bucket que um dado registro está. O número do bucket
-// pode ser multiplicado por um offset (bytes) para encontrar o inicio do
-// bucket.
-void createHashFile(const char* path) {
-  FILE* file = fopen(path, "wb+");
-  Block placeHolder;
-  try {
-    for (int i = 0; i < LARGE_PRIME; i++) {
-      fwrite(&placeHolder, BLOCK_SIZE, 1, file);
-    }
-    fclose(file);
-  } catch (const std::exception& e) {
-    std::cerr << e.what() << '\n';
-  }
-}
-
-int calculateHash(int id) { return id % LARGE_PRIME; }
 
 // o primeiro argumento de argv e o proprio arquivo
 int main(int argc, char const* argv[]) {
@@ -60,19 +43,16 @@ int main(int argc, char const* argv[]) {
   CsvReader reader(argv[1]);
   Line line;
   Block block;
-  createHashFile(SMALL_HASH_FILE_PATH);
-
+  HashFile hash;
   while (!reader.isAtEndOfFile()) {
     line = reader.getNextFormattedLine();
-    if (!block.insertItem(line)) {
+    if (!hash.insertItem(line)) {
       cout << endl << "n buto" << endl;
-      // bloco cheio
-      break;
     }
     cout << "linha: " << line.id << endl;
   }
-  Line* lineout = block.getItem(2);
-  cout << "linhaLida: " << lineout->id << endl;
+  Line *pLine = hash.getLineFromBlock(4);
+  cout << endl << pLine->id << endl;
 
   return 0;
 }

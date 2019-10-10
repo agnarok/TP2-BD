@@ -1,9 +1,11 @@
 #include "Block.h"
 #include "definitions.h"
-// max number of lines per block.
-#define MAX_OCCUPIED 3072
 
-bool Block::insertItem(const Line line) {
+Block::Block() {
+  this->usedBytes = 0;
+}
+
+bool Block::insertItem(Line line) {
   if (this->usedBytes >= MAX_OCCUPIED) {
     return false;
   }
