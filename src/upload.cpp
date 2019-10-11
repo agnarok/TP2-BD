@@ -17,11 +17,13 @@ class CsvReader {
   bool isAtEndOfFile() { return fin.peek() == EOF; }
 
   Line getNextFormattedLine() {
+    cout << "FILHA" << endl;
     string line;
     string word;
     getline(fin, line);
     stringstream s1(line);
     vector<string> lineIn;
+    // mano n le linha vazinha
     while (std::getline(std::getline(s1, word, '"'), word, '"')) {
       lineIn.push_back(word);
     }
@@ -51,8 +53,8 @@ int main(int argc, char const* argv[]) {
     }
     cout << "linha: " << line.id << endl;
   }
-  Line *pLine = hash.getLineFromBlock(4);
-  cout << endl << pLine->id << endl;
+  Line *pLine = hash.getLineFromBlock(50);
+  cout << endl << pLine->titulo << endl;
   hash.closeFile();
   return 0;
 }

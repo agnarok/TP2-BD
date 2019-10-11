@@ -7,7 +7,8 @@ HashFile::HashFile() {
   fseek(file, 0, SEEK_SET);
   Block placeHolder;
   try {
-    for (int i = 0; i < LARGE_PRIME; i++) {
+    for (int i = 0; i < LARGE_PRIME*2; i++) {
+      cout << "escrevendo bloco " << i << endl;  
       fwrite(&placeHolder, BLOCK_SIZE, 1, file);
     }
   } catch (const std::exception &e) {
@@ -16,10 +17,9 @@ HashFile::HashFile() {
 }
 
 // -1 because .csv starts with 1
-int HashFile::calculateHash(int id) { return (id % LARGE_PRIME) - 1; }
+int HashFile::calculateHash(int id) { return (id % LARGE_PRIME); }
 
-void HashFile::commitInsertion(int offset, Block *outputBlock) {
-  fseek(this->file, offset, SEEK_SET);
+void HashFile::commitInsertion(Block *outputBlock) {
   fwrite(outputBlock, BLOCK_SIZE, 1, this->file);
 }
 
@@ -33,19 +33,26 @@ bool HashFile::insertItem(Line &line) {
   int offset = inputBucket * BUCKET_SIZE;
   Block outputBlock;
   fseek(this->file, offset, SEEK_SET);
-
-//  TODO: AQUI AINDA PARA DE LER POR ALGUM MOTIVO
   if (!fread(&outputBlock, sizeof(Block), 1, this->file)) {
-    cout << "deu muito ruim" << endl;
     return false;
   }
+  fseek(this->file, offset, SEEK_SET);
   if (outputBlock.insertItem(line)) {
-    commitInsertion(offset, &outputBlock);
+    commitInsertion(&outputBlock);
     return true;
   } else {
     offset += BLOCK_SIZE;
-    commitInsertion(offset, &outputBlock);
-    return true;
+    fseek(this->file, offset, SEEK_SET);
+    if(!fread(&outputBlock, sizeof(Block), 1, this->file)) {
+      return false;
+    }
+    if (outputBlock.insertItem(line)) {
+      offset -= BLOCK_SIZE;
+      fseek(this->file, offset, SEEK_SET);
+      cout << "ME CHUPA " << ftell(this->file) << endl;
+      commitInsertion(&outputBlock);
+      return true;
+    };
   }
   return false;
 }
@@ -57,13 +64,20 @@ Line *HashFile::getLineFromBlock(int lineId) {
   Line *outputLine;
   fseek(this->file, offset, SEEK_SET);
   fread(&outputBlock, BLOCK_SIZE, 1, this->file);
+  cout << " PRIMEIRO BLOCO " << ftell(this->file) << endl;
   outputLine = outputBlock.getItem(lineId);
   if (outputLine != nullptr) {
     return outputLine;
   }
   fread(&outputBlock, BLOCK_SIZE, 1, this->file);
+  cout << "TAMANHO SEGUNDO BLOCO: " << outputBlock.usedBytes << endl;
+  cout << " SEGUNDO BLOCO " << ftell(this->file) << endl;  
   outputLine = outputBlock.getItem(lineId);
-  return outputLine;
+  if (outputLine != nullptr) {
+    cout << "deu bom " << endl;
+    return outputLine;
+  }
+  return nullptr;
 }
 
 void HashFile::closeFile() { fclose(this->file); }
