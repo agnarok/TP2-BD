@@ -30,10 +30,8 @@ using namespace std;
 // word ;
 // word 9
 
-
-
-
 // O ARQUIVO TA TERMINANDO EM CLRF, TROCAR PRA LF PORAAAAAAAAAAAA
+// VER PROBLEMA DE DOIS PONTO E VIRGLA NA LINHA 96
 class CsvReader {
  public:
   fstream fin;
@@ -43,27 +41,36 @@ class CsvReader {
 
   Line* getNextFormattedLine() {
     string word;
+    string lastWord;
     getline(fin, word);
 
     // while (std::getline(std::getline(s1, word, '"'), word, ';')) {
-    if(word.substr(word.size()-4,4) == "NULL") {
+    if (word.substr(word.size() - 4, 4) == "NULL") {
       // cout << "substr " << word.substr(word.size()-4,4) << endl;
       word.push_back('\"');
     } else {
       word.push_back(';');
     }
-    cout << word << endl;
+    // cout << word << endl;
     stringstream s1(word);
     vector<string> lineIn;
     string internal;
     while (std::getline(s1, word, '"')) {
       cout << word << endl;
-      if (word != ";" && word.size() != 0) {
+      if (word != ";" && word.size() != 0 && word != ";;") {
         internal.append(word);
+        lastWord = word;
       } else if (word == ";") {
         lineIn.push_back(internal);
         cout << "word " << internal << endl;
         internal = "";
+        lastWord = word;
+      } else if (word == ";;") {
+        lineIn.push_back(internal);        
+        cout << "word " << internal << endl;
+        lineIn.push_back("empty");
+        internal = "";
+        lastWord = ";";
       }
     }
     // problema no id 262150
@@ -71,7 +78,10 @@ class CsvReader {
     cout << "teste0 " << lineIn[0] << endl;
     cout << "teste1 " << lineIn[1] << endl;
     cout << "teste2 " << lineIn[2] << endl;
-    cout << "teste4 " << lineIn[6] << endl;
+    cout << "teste3 " << lineIn[3] << endl;
+    cout << "teste4 " << lineIn[4] << endl;
+    cout << "teste5 " << lineIn[5] << endl;
+    cout << "teste6 " << lineIn[6] << endl;
     Line* out = new Line(stoi(lineIn[0]), lineIn[1], stoi(lineIn[2]), lineIn[3],
                          stoi(lineIn[4]), lineIn[5], lineIn[6]);
 
@@ -98,7 +108,7 @@ int main(int argc, char const* argv[]) {
     delete line;
     // cout << "linha: " << line->id << endl;
   }
-  Line* pLine = hash.getLineFromBlock(262150);
+  Line* pLine = hash.getLineFromBlock(96);
   cout << endl << pLine->titulo << endl;
   hash.closeFile();
   return 0;
