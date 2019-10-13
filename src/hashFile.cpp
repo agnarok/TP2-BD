@@ -2,16 +2,21 @@
 #include <cstdio>
 #include <iostream>
 
-HashFile::HashFile() {
-  file = fopen(SMALL_HASH_FILE_PATH, "w+");
-  fseek(file, 0, SEEK_SET);
-  Block placeHolder;
-  try {
-    for (int i = 0; i < LARGE_PRIME * 2; i++) {
-      fwrite(&placeHolder, BLOCK_SIZE, 1, file);
+HashFile::HashFile(bool createFile = true) {
+  if (createFile) {
+    file = fopen(SMALL_HASH_FILE_PATH, "w+");
+    fseek(file, 0, SEEK_SET);
+    Block placeHolder;
+    try {
+      for (int i = 0; i < LARGE_PRIME * 2; i++) {
+        fwrite(&placeHolder, BLOCK_SIZE, 1, file);
+      }
+    } catch (const std::exception &e) {
+      std::cerr << e.what() << '\n';
     }
-  } catch (const std::exception &e) {
-    std::cerr << e.what() << '\n';
+  } else {
+    file = fopen(SMALL_HASH_FILE_PATH, "r");
+    fseek(file, 0, SEEK_SET);
   }
 }
 

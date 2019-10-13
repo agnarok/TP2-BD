@@ -11,7 +11,7 @@ using namespace std;
 class HashFile {
   FILE* file;
  public:
-  HashFile();
+  HashFile(bool createFile);
   void closeFile();
   Line* getLineFromBlock(int lineId);
   int calculateHash(int id);

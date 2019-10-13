@@ -106,7 +106,7 @@ int main(int argc, char const* argv[]) {
   CsvReader reader(argv[1]);
   Line* line;
   Block block;
-  HashFile hash;
+  HashFile hash(true);
   while (!reader.isAtEndOfFile()) {
     line = reader.getNextFormattedLine();
     if (!hash.insertItem(*line)) {
@@ -115,8 +115,6 @@ int main(int argc, char const* argv[]) {
     delete line;
     // cout << "linha: " << line->id << endl;
   }
-  Line* pLine = hash.getLineFromBlock(96);
-  cout << endl << pLine->titulo << endl;
   hash.closeFile();
   return 0;
 }
