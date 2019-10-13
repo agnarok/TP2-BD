@@ -2,9 +2,8 @@
 #include "definitions.h"
 #include "hashFile.h"
 
-
+// 1.549.146 registros
 int main(int argc, char const* argv[]) {
-  cout << endl << argv[1] << endl;
   if (argc == 1) {
     cout << "No input file -- exiting." << endl;
     return 0;

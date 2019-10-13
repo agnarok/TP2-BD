@@ -12,7 +12,7 @@ bool Block::insertItem(Line line) {
   unsigned int offset;
   offset = this->usedBytes;
   std::memcpy(&(this->rawData[offset]), &line, sizeof(line));
-  this->usedBytes += sizeof(line);
+  this->usedBytes += sizeof(Line);
   return true;
 }
 

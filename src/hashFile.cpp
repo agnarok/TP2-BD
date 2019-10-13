@@ -50,7 +50,6 @@ bool HashFile::insertItem(Line &line) {
       return false;
     }
     if (outputBlock.insertItem(line)) {
-      offset -= BLOCK_SIZE;
       fseek(this->file, offset, SEEK_SET);
       commitInsertion(&outputBlock);
       return true;
@@ -70,6 +69,8 @@ Line *HashFile::getLineFromBlock(int lineId) {
   if (outputLine != nullptr) {
     return outputLine;
   }
+  offset += BLOCK_SIZE;
+  fseek(this->file, offset, SEEK_SET);
   fread(&outputBlock, BLOCK_SIZE, 1, this->file);
   outputLine = outputBlock.getItem(lineId);
   if (outputLine != nullptr) {
