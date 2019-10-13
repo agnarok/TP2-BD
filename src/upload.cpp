@@ -13,6 +13,27 @@
 
 using namespace std;
 
+// string problematic_arr[] = {"262150", "262299", "262299"};
+
+// word
+// word 262150
+// word ;
+// word
+// word
+// word two - 4 - six
+// word
+// word  - A Handheld Device for 3D-Presentations
+// word ;
+// word 2006
+// word ;
+// word Alexander Kulik|Bernd Fr&ouml;hlich|Roland Blach
+// word ;
+// word 9
+
+
+
+
+// O ARQUIVO TA TERMINANDO EM CLRF, TROCAR PRA LF PORAAAAAAAAAAAA
 class CsvReader {
  public:
   fstream fin;
@@ -23,18 +44,32 @@ class CsvReader {
   Line* getNextFormattedLine() {
     string word;
     getline(fin, word);
+
+    // while (std::getline(std::getline(s1, word, '"'), word, ';')) {
+    if(word.substr(word.size()-4,4) == "NULL") {
+      // cout << "substr " << word.substr(word.size()-4,4) << endl;
+      word.push_back('\"');
+    }
+    cout << word << endl;
     stringstream s1(word);
     vector<string> lineIn;
+    string internal;
     while (std::getline(s1, word, '"')) {
-      // getline dessa forma le uma string vazia na primeira vez
-      if (word[0] != ';' && word.size() != 0) {
-        lineIn.push_back(word);
-      } else {
-        if (word[1] == 'N') {
-          lineIn.push_back("NULL");
-        }
+      cout << word << endl;
+      if (word != ";" && word.size() != 0) {
+        internal.append(word);
+      } else if (word == ";") {
+        lineIn.push_back(internal);
+        cout << "word " << internal << endl;
+        internal = "";
       }
     }
+    // problema no id 262150
+    cout << endl;
+    cout << "teste0 " << lineIn[0] << endl;
+    cout << "teste1 " << lineIn[1] << endl;
+    cout << "teste2 " << lineIn[2] << endl;
+    cout << "teste4 " << lineIn[6] << endl;
     Line* out = new Line(stoi(lineIn[0]), lineIn[1], stoi(lineIn[2]), lineIn[3],
                          stoi(lineIn[4]), lineIn[5], lineIn[6]);
 
@@ -61,7 +96,7 @@ int main(int argc, char const* argv[]) {
     delete line;
     // cout << "linha: " << line->id << endl;
   }
-  Line *pLine = hash.getLineFromBlock(2636);
+  Line* pLine = hash.getLineFromBlock(2636);
   cout << endl << pLine->titulo << endl;
   hash.closeFile();
   return 0;
