@@ -49,6 +49,8 @@ class CsvReader {
     if(word.substr(word.size()-4,4) == "NULL") {
       // cout << "substr " << word.substr(word.size()-4,4) << endl;
       word.push_back('\"');
+    } else {
+      word.push_back(';');
     }
     cout << word << endl;
     stringstream s1(word);
@@ -96,7 +98,7 @@ int main(int argc, char const* argv[]) {
     delete line;
     // cout << "linha: " << line->id << endl;
   }
-  Line* pLine = hash.getLineFromBlock(2636);
+  Line* pLine = hash.getLineFromBlock(262150);
   cout << endl << pLine->titulo << endl;
   hash.closeFile();
   return 0;
