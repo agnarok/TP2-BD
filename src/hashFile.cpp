@@ -7,8 +7,7 @@ HashFile::HashFile() {
   fseek(file, 0, SEEK_SET);
   Block placeHolder;
   try {
-    for (int i = 0; i < LARGE_PRIME*2; i++) {
-      cout << "escrevendo bloco " << i << endl;  
+    for (int i = 0; i < LARGE_PRIME * 2; i++) {
       fwrite(&placeHolder, BLOCK_SIZE, 1, file);
     }
   } catch (const std::exception &e) {
@@ -29,7 +28,6 @@ void HashFile::commitInsertion(Block *outputBlock) {
  */
 bool HashFile::insertItem(Line &line) {
   int inputBucket = calculateHash(line.id);
-  cout << inputBucket << endl;
   int offset = inputBucket * BUCKET_SIZE;
   Block outputBlock;
   fseek(this->file, offset, SEEK_SET);
@@ -43,13 +41,12 @@ bool HashFile::insertItem(Line &line) {
   } else {
     offset += BLOCK_SIZE;
     fseek(this->file, offset, SEEK_SET);
-    if(!fread(&outputBlock, sizeof(Block), 1, this->file)) {
+    if (!fread(&outputBlock, sizeof(Block), 1, this->file)) {
       return false;
     }
     if (outputBlock.insertItem(line)) {
       offset -= BLOCK_SIZE;
       fseek(this->file, offset, SEEK_SET);
-      cout << "ME CHUPA " << ftell(this->file) << endl;
       commitInsertion(&outputBlock);
       return true;
     };
@@ -64,17 +61,13 @@ Line *HashFile::getLineFromBlock(int lineId) {
   Line *outputLine;
   fseek(this->file, offset, SEEK_SET);
   fread(&outputBlock, BLOCK_SIZE, 1, this->file);
-  cout << " PRIMEIRO BLOCO " << ftell(this->file) << endl;
   outputLine = outputBlock.getItem(lineId);
   if (outputLine != nullptr) {
     return outputLine;
   }
   fread(&outputBlock, BLOCK_SIZE, 1, this->file);
-  cout << "TAMANHO SEGUNDO BLOCO: " << outputBlock.usedBytes << endl;
-  cout << " SEGUNDO BLOCO " << ftell(this->file) << endl;  
   outputLine = outputBlock.getItem(lineId);
   if (outputLine != nullptr) {
-    cout << "deu bom " << endl;
     return outputLine;
   }
   return nullptr;

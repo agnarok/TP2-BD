@@ -7,6 +7,10 @@
 
 //./upload ../data/sample_small.csv
 
+// para printar partes do csv.
+// sed -n '2635p' entrada.csv | awk -F ';' '{print $3 $4}'
+//  make all data=sample_small.csv
+
 using namespace std;
 
 class CsvReader {
@@ -16,24 +20,27 @@ class CsvReader {
 
   bool isAtEndOfFile() { return fin.peek() == EOF; }
 
-  Line getNextFormattedLine() {
-    cout << "FILHA" << endl;
-    string line;
+  Line* getNextFormattedLine() {
     string word;
-    getline(fin, line);
-    stringstream s1(line);
+    getline(fin, word);
+    stringstream s1(word);
     vector<string> lineIn;
-    // mano n le linha vazinha
-    while (std::getline(std::getline(s1, word, '"'), word, '"')) {
-      lineIn.push_back(word);
+    while (std::getline(s1, word, '"')) {
+      // getline dessa forma le uma string vazia na primeira vez
+      if (word[0] != ';' && word.size() != 0) {
+        lineIn.push_back(word);
+      } else {
+        if (word[1] == 'N') {
+          lineIn.push_back("NULL");
+        }
+      }
     }
+    Line* out = new Line(stoi(lineIn[0]), lineIn[1], stoi(lineIn[2]), lineIn[3],
+                         stoi(lineIn[4]), lineIn[5], lineIn[6]);
 
-    Line out(stoi(lineIn[0]), lineIn[1], stoi(lineIn[2]), lineIn[3],
-             stoi(lineIn[4]), lineIn[5], lineIn[6]);
     return out;
   }
 };
-
 
 // o primeiro argumento de argv e o proprio arquivo
 int main(int argc, char const* argv[]) {
@@ -43,17 +50,18 @@ int main(int argc, char const* argv[]) {
     return 0;
   }
   CsvReader reader(argv[1]);
-  Line line;
+  Line* line;
   Block block;
   HashFile hash;
   while (!reader.isAtEndOfFile()) {
     line = reader.getNextFormattedLine();
-    if (!hash.insertItem(line)) {
+    if (!hash.insertItem(*line)) {
       cout << endl << "n buto" << endl;
     }
-    cout << "linha: " << line.id << endl;
+    delete line;
+    // cout << "linha: " << line->id << endl;
   }
-  Line *pLine = hash.getLineFromBlock(50);
+  Line *pLine = hash.getLineFromBlock(2636);
   cout << endl << pLine->titulo << endl;
   hash.closeFile();
   return 0;
