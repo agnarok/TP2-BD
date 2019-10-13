@@ -41,47 +41,52 @@ class CsvReader {
 
   Line* getNextFormattedLine() {
     string word;
-    string lastWord;
     getline(fin, word);
-
+    
+    // input file uses CLRF as newlines. Why? :(
+    if(word.at(word.size()-1) == '\r') {
+      word.erase(word.size()-1);
+    }
     // while (std::getline(std::getline(s1, word, '"'), word, ';')) {
     if (word.substr(word.size() - 4, 4) == "NULL") {
       // cout << "substr " << word.substr(word.size()-4,4) << endl;
-      word.push_back('\"');
+      word.erase(word.end() - 4, word.end());
+      word.push_back(';');
     } else {
       word.push_back(';');
     }
+
+
+    // cout << "\n\n" << word << endl;
+
     // cout << word << endl;
     stringstream s1(word);
     vector<string> lineIn;
     string internal;
     while (std::getline(s1, word, '"')) {
-      cout << word << endl;
+      // cout << endl << "input " << word << endl;
       if (word != ";" && word.size() != 0 && word != ";;") {
         internal.append(word);
-        lastWord = word;
       } else if (word == ";") {
         lineIn.push_back(internal);
-        cout << "word " << internal << endl;
+        // cout << "word " << internal << endl;
         internal = "";
-        lastWord = word;
       } else if (word == ";;") {
-        lineIn.push_back(internal);        
-        cout << "word " << internal << endl;
-        lineIn.push_back("empty");
+        lineIn.push_back(internal);
+        // cout << "word " << internal << endl;
+        lineIn.push_back("NULL");
         internal = "";
-        lastWord = ";";
       }
     }
-    // problema no id 262150
-    cout << endl;
+
+    // cout << endl;
     cout << "teste0 " << lineIn[0] << endl;
-    cout << "teste1 " << lineIn[1] << endl;
-    cout << "teste2 " << lineIn[2] << endl;
-    cout << "teste3 " << lineIn[3] << endl;
-    cout << "teste4 " << lineIn[4] << endl;
-    cout << "teste5 " << lineIn[5] << endl;
-    cout << "teste6 " << lineIn[6] << endl;
+    // cout << "teste1 " << lineIn[1] << endl;
+    // cout << "teste2 " << lineIn[2] << endl;
+    // cout << "teste3 " << lineIn[3] << endl;
+    // cout << "teste4 " << lineIn[4] << endl;
+    // cout << "teste5 " << lineIn[5] << endl;
+    // cout << "teste6 " << lineIn[6] << endl;
     Line* out = new Line(stoi(lineIn[0]), lineIn[1], stoi(lineIn[2]), lineIn[3],
                          stoi(lineIn[4]), lineIn[5], lineIn[6]);
 
@@ -108,8 +113,8 @@ int main(int argc, char const* argv[]) {
     delete line;
     // cout << "linha: " << line->id << endl;
   }
-  Line* pLine = hash.getLineFromBlock(96);
-  cout << endl << pLine->titulo << endl;
+  // Line* pLine = hash.getLineFromBlock(96);
+  // cout << endl << pLine->titulo << endl;
   hash.closeFile();
   return 0;
 }
