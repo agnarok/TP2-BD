@@ -23,8 +23,9 @@ HashFile::HashFile(bool createFile = true) {
 // -1 because .csv starts with 1
 int HashFile::calculateHash(int id) { return (id % LARGE_PRIME); }
 
-void HashFile::commitInsertion(Block *outputBlock) {
-  fwrite(outputBlock, BLOCK_SIZE, 1, this->file);
+int HashFile::commitInsertion(Block *outputBlock) {
+  int res = fwrite(outputBlock, BLOCK_SIZE, 1, this->file);
+  return res;
 }
 
 /**
@@ -33,7 +34,7 @@ void HashFile::commitInsertion(Block *outputBlock) {
  */
 bool HashFile::insertItem(Line &line) {
   int inputBucket = calculateHash(line.id);
-  int offset = inputBucket * BUCKET_SIZE;
+  unsigned long long int offset = inputBucket * ((unsigned long long int) BUCKET_SIZE);
   Block outputBlock;
   fseek(this->file, offset, SEEK_SET);
   if (!fread(&outputBlock, sizeof(Block), 1, this->file)) {
@@ -42,6 +43,10 @@ bool HashFile::insertItem(Line &line) {
   fseek(this->file, offset, SEEK_SET);
   if (outputBlock.insertItem(line)) {
     commitInsertion(&outputBlock);
+    if (line.id == 500000) {
+      fseek(this->file, offset, SEEK_SET);
+      cout << "tell" << ftell(this->file) << endl;
+    }
     return true;
   } else {
     offset += BLOCK_SIZE;
@@ -52,6 +57,10 @@ bool HashFile::insertItem(Line &line) {
     if (outputBlock.insertItem(line)) {
       fseek(this->file, offset, SEEK_SET);
       commitInsertion(&outputBlock);
+      int t = commitInsertion(&outputBlock);
+      // cout << "offset: " << offset << endl;
+      // cout << "escrevi no outro: " << line.id << endl;
+
       return true;
     };
   }
@@ -60,12 +69,15 @@ bool HashFile::insertItem(Line &line) {
 
 Line *HashFile::getLineFromBlock(int lineId) {
   int outputBucket = calculateHash(lineId);
-  int offset = outputBucket * BUCKET_SIZE;
+  unsigned long long int offset = outputBucket * ((unsigned long long int) BUCKET_SIZE);
+  cout << "bloco de saida: " << offset << endl;
   Block outputBlock;
   Line *outputLine;
   fseek(this->file, offset, SEEK_SET);
+  cout  << "tell: " << ftell(this->file) << endl;
   fread(&outputBlock, BLOCK_SIZE, 1, this->file);
   outputLine = outputBlock.getItem(lineId);
+  cout << "used bytes : " << outputBlock.usedBytes << endl;
   if (outputLine != nullptr) {
     return outputLine;
   }

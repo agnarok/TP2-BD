@@ -16,5 +16,5 @@ class HashFile {
   Line* getLineFromBlock(int lineId);
   int calculateHash(int id);
   bool insertItem(Line& line);
-  void commitInsertion(Block *outputBlock);
+  int commitInsertion(Block *outputBlock);
 };

@@ -1,9 +1,7 @@
 #include "Block.h"
 #include "definitions.h"
 
-Block::Block() {
-  this->usedBytes = 0;
-}
+Block::Block() { this->usedBytes = 0; }
 
 bool Block::insertItem(Line line) {
   if (this->usedBytes >= MAX_OCCUPIED) {
@@ -17,12 +15,13 @@ bool Block::insertItem(Line line) {
 }
 
 // scans an entire block sequentially untill it finds the required line
-Line* Block::getItem(unsigned int id) {
+Line *Block::getItem(unsigned int id) {
   unsigned int cursor = 0;
   Line *line;
-  while(cursor < this->usedBytes) {
+  while (cursor < this->usedBytes) {
     line = reinterpret_cast<Line *>(&this->rawData[cursor]);
-    if(line->id == id) {
+    cout << "linha " << line->id << endl;
+    if (line->id == id) {
       return line;
     }
     cursor += sizeof(Line);

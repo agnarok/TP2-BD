@@ -107,14 +107,17 @@ int main(int argc, char const* argv[]) {
   Line* line;
   Block block;
   HashFile hash(true);
+  int col;
   while (!reader.isAtEndOfFile()) {
     line = reader.getNextFormattedLine();
     if (!hash.insertItem(*line)) {
-      cout << endl << "n buto" << endl;
+      // cout << endl << "n buto" << endl;
+      col++;
     }
     delete line;
     // cout << "linha: " << line->id << endl;
   }
+  cout << "numcol: " << col << endl;
   hash.closeFile();
   return 0;
 }

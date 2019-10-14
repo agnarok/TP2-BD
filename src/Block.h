@@ -7,6 +7,6 @@ class Block {
  public:
   unsigned int usedBytes;
   Block();
-  bool insertItem(const Line);
+  bool insertItem(const Line line);
   Line* getItem(unsigned int id);
 };
