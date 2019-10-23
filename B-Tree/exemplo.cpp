@@ -36,13 +36,14 @@ int main()
 	// 	std::cout << "\n---------------------\n";
 	// }
 	int i=1;
-	while (i<=200){
+	while (i<=17){
 		arvore.inserir(i);
+		if(i==17){
 		std::cout << "Apos inserir " << i << ":\n";
-		if(i==200){
 		arvore.desenhar();
-		}
 		std::cout << "\n---------------------\n";
+		}
 		i++;
 	}
+	arvore.busca(20);
 }

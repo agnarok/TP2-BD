@@ -57,6 +57,11 @@ public:
     void desenhar() {
         desenhar(raiz, 0);
     }
+
+    T busca(const T &chave){
+        busca(raiz,chave);
+    }
+
 public:
     NoB<T> *raiz;
     int ordem;
@@ -73,6 +78,8 @@ public:
     NoB<T> *criar_no(bool folha);
 
     void desenhar(NoB<T> *raiz, int nivel);
+
+    T busca(NoB<T> *no,const T &chave);
 };
 
 
@@ -243,3 +250,29 @@ NoB<T> *ArvoreB<T>::criar_no(bool folha)
 
     return novo;
 }
+
+template<typename T>
+T ArvoreB<T>::busca(NoB<T> *no,const T &chave){
+    int meio;
+    int limitSup = no->num_chaves - 1;
+    int limitInf = 0;
+    while (limitInf<=limitSup){
+        meio = (limitInf+limitSup)/2;
+        if(chave == no->chaves[meio]){
+            return no->chaves[meio];
+        }
+        if(chave>no->chaves[meio]){
+            limitInf = meio +1;
+            // std::cout<< limitInf << " maior\n";
+        } else{
+            limitSup = meio -1;
+            // std::cout << limitSup <<" menor\n";
+        }
+    }
+    if(no->filhos[limitInf]==NULL){
+        std::cout<< "num ta aq mermao\n";
+    }else{
+
+    return busca(no->filhos[limitInf],chave);
+    }
+} 
