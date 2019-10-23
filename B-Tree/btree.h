@@ -35,7 +35,7 @@ public:
         }
         cout << "\n";
     }
-private:
+public:
     friend class ArvoreB<T>;
     T *chaves;
     NoB **filhos;
@@ -57,7 +57,7 @@ public:
     void desenhar() {
         desenhar(raiz, 0);
     }
-private:
+public:
     NoB<T> *raiz;
     int ordem;
     int max_chaves;
@@ -182,7 +182,7 @@ void ArvoreB<T>::dividir_no(NoB<T> *no, NoB<T> *pai)
 
     NoB<T> *novo = criar_no(no->folha);
     
-    for (i = meio + 1, j = 0; i < no->num_chaves; i++, j++) {
+    for (i = meio + 1, j = 0; i < no->num_chaves; i++, j++) { //Nó da direita
         novo->chaves[j] = no->chaves[i];
         novo->filhos[j] = no->filhos[i];
     }
@@ -190,8 +190,12 @@ void ArvoreB<T>::dividir_no(NoB<T> *no, NoB<T> *pai)
     novo->filhos[j] = no->filhos[i];
 
     // Aqui sera feita a alteração para transformar em Arvore B+
-    for (int i = meio + 1; i <= no->num_chaves; i++) {
-        no->filhos[i] = NULL;
+    for (int i = meio + 2; i <= no->num_chaves; i++) { //Nó da esquerda
+        if(i==max_chaves && no->folha){
+            no->filhos[i] = novo;
+        } else {
+            no->filhos[i] = NULL;
+        }
     }
 
     const T &promovida = no->chaves[meio];
@@ -206,7 +210,7 @@ void ArvoreB<T>::dividir_no(NoB<T> *no, NoB<T> *pai)
 
 
     novo->num_chaves = no->num_chaves - meio - 1;
-    no->num_chaves = meio;
+    no->num_chaves = meio + 1;
     pai->num_chaves++;
 }
 
@@ -217,7 +221,7 @@ ArvoreB<T>::ArvoreB(int ordem)
     assert(ordem > 1);
     this->ordem = ordem;
     this->raiz = NULL;
-    this->max_chaves = 2 * ordem - 1;
+    this->max_chaves = 2 * ordem;
 }
 
 

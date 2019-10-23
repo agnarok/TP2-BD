@@ -20,20 +20,29 @@ using std::cin;
 
 int main()
 {
-	char c;
+	int c;
 
     // Cria uma árvore vazia
-	ArvoreB<char> arvore(ORDEM);
+	ArvoreB<int> arvore(ORDEM);
 
-    cout << "Chave: ";
-	while ((std::cin >> c) && c != SENTINELA) {
-        // Caso o valor lido seja diferente do sentinela,
-        // insere na árvore
-		arvore.inserir(c);
+	// while ((std::cin >> c) && c != SENTINELA) {
+    //     // Caso o valor lido seja diferente do sentinela,
+    //     // insere na árvore
+	// 	arvore.inserir(c);
 
-        // Exibe a mensagem e desenha a árvore
-		std::cout << "Apos inserir " << c << ":\n";
+    //     // Exibe a mensagem e desenha a árvore
+	// 	std::cout << "Apos inserir " << c << ":\n";
+	// 	arvore.desenhar();
+	// 	std::cout << "\n---------------------\n";
+	// }
+	int i=1;
+	while (i<=200){
+		arvore.inserir(i);
+		std::cout << "Apos inserir " << i << ":\n";
+		if(i==200){
 		arvore.desenhar();
+		}
 		std::cout << "\n---------------------\n";
+		i++;
 	}
 }

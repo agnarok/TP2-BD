@@ -6,3 +6,5 @@ upload
 \.vscode/settings\.json
 
 \.~lock\.arquivo\.entrada\.tp2\.bd1\.artigos\.csv#
+
+.vscode/
