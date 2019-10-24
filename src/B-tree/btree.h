@@ -131,7 +131,9 @@ void ArvoreB<T>::desenhar(NoB<T> *raiz, int nivel)
     // desenhar os filhos
     if (!raiz->folha) {
         for (int i = 0; i <= raiz->num_chaves; i++) {
-            desenhar(raiz->filhos[i], nivel + 1);
+            if(raiz->filhos[i]!=NULL){
+                desenhar(raiz->filhos[i], nivel + 1);
+            }
         }
     }
 }
@@ -247,7 +249,7 @@ void ArvoreB<T>::dividir_no(NoB<T> *no, NoB<T> *pai)
     novo->filhos[j] = no->filhos[i];
 
     // Aqui sera feita a alteração para transformar em Arvore B+
-    for (int i = meio + 2; i <= no->num_chaves; i++) { //Nó da esquerda
+    for (int i = meio + 1; i <= no->num_chaves; i++) { //Nó da esquerda
         if(i==max_chaves && no->folha){
             no->filhos[i] = novo->diskOffset;
         } else {
