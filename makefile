@@ -8,7 +8,7 @@ upload:
 # 	g++ -o Block.o src/Block.cpp
 
 btree:
-	g++ src/B-tree/exemplo.cpp -o btree
+	g++ src/B-tree/exemplo.cpp src/Line.cpp -o btree
 
 find: createFind
 	./findrec $(id)

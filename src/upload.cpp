@@ -92,7 +92,6 @@ int main(int argc, char const* argv[]) {
   }
   CsvReader reader(argv[1]);
   Line* line;
-  Block block;
   HashFile hash(true);
   int col;
   while (!reader.isAtEndOfFile()) {
