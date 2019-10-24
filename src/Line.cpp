@@ -13,3 +13,14 @@ Line::Line(int id, string titulo, int ano, string autores, int citacoes,
   memcpy(this->atualiz, atualiz.c_str(), 50);
   memcpy(this->snippet, snippet.c_str(), 1024);
 }
+
+ void Line::print() {
+  cout << "------------------\nline info: " << endl;
+  cout << "id: " << this->id << endl;
+  cout << "titulo: " << this->titulo << endl;
+  cout << "Ano: " << this->ano << endl;
+  cout << "autores: " << this->autores << endl;
+  cout << "citacoes: " << this->citacoes << endl;
+  cout << "atualização: " << this->atualiz << endl;
+  cout << "snippet: " << this->snippet << endl;
+}

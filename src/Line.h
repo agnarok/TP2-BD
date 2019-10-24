@@ -11,6 +11,7 @@ class Line {
   char autores[150];
   char atualiz[50]; 
   char snippet[1024];
+  void print();
   Line(){};
   Line(int id, string titulo, int ano, string autores, int citacoes,
        string atualiz, string snippet);

@@ -16,7 +16,7 @@ int main(int argc, char const* argv[]) {
   if (pLine == nullptr) {
     cout << endl << "nao existe" << endl;
   } else {
-    cout << endl << pLine->titulo << endl;
+    pLine->print();
   }
   hash.closeFile();
   return 0;

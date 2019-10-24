@@ -1,5 +1,3 @@
-# My first makefile
-
 all: upload
 	./upload data/$(data)
 # printy: src/upload.o src/Block.o

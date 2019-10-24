@@ -58,10 +58,8 @@ class CsvReader {
     // For NULL snippets.
     if (word.substr(word.size() - 4, 4) == "NULL") {
       word.erase(word.end() - 4, word.end());
-      word.push_back(';');
-    } else {
-      word.push_back(';');
     }
+    word.push_back(';');
 
     stringstream s1(word);
     vector<string> lineIn;
