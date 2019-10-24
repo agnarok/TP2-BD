@@ -45,7 +45,6 @@ bool HashFile::insertItem(Line &line) {
     commitInsertion(&outputBlock);
     if (line.id == 500000) {
       fseek(this->file, offset, SEEK_SET);
-      cout << "tell" << ftell(this->file) << endl;
     }
     return true;
   } else {
@@ -58,8 +57,6 @@ bool HashFile::insertItem(Line &line) {
       fseek(this->file, offset, SEEK_SET);
       commitInsertion(&outputBlock);
       int t = commitInsertion(&outputBlock);
-      // cout << "offset: " << offset << endl;
-      // cout << "escrevi no outro: " << line.id << endl;
 
       return true;
     };
@@ -67,23 +64,29 @@ bool HashFile::insertItem(Line &line) {
   return false;
 }
 
-Line *HashFile::getLineFromBlock(int lineId) {
+/*
+ * readBlocks é o número de blocos lidos para um get.
+ * totalBlocks é o número total de blocos do arquivo. (pedido no trabalho)  
+*/
+Line *HashFile::getLineFromBlock(int lineId, int &readBlocks, int &totalBlocks) {
+  totalBlocks = LARGE_PRIME*2;
+  readBlocks = 0;
   int outputBucket = calculateHash(lineId);
   unsigned long long int offset = outputBucket * ((unsigned long long int) BUCKET_SIZE);
-  cout << "bloco de saida: " << offset << endl;
   Block outputBlock;
   Line *outputLine;
+
   fseek(this->file, offset, SEEK_SET);
-  cout  << "tell: " << ftell(this->file) << endl;
   fread(&outputBlock, BLOCK_SIZE, 1, this->file);
+  readBlocks++;
   outputLine = outputBlock.getItem(lineId);
-  cout << "used bytes : " << outputBlock.usedBytes << endl;
   if (outputLine != nullptr) {
     return outputLine;
   }
   offset += BLOCK_SIZE;
   fseek(this->file, offset, SEEK_SET);
   fread(&outputBlock, BLOCK_SIZE, 1, this->file);
+  readBlocks++;
   outputLine = outputBlock.getItem(lineId);
   if (outputLine != nullptr) {
     return outputLine;

@@ -1,5 +1,4 @@
-// #define LARGE_PRIME 6700417
-#define LARGE_PRIME 774629
+#define LARGE_PRIME 390419
 #define SMALL_HASH_FILE_PATH "./data/sample_file.hash"
 // size in bytes of a bucket
 #define BUCKET_SIZE 8192

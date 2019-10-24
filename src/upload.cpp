@@ -65,28 +65,17 @@ class CsvReader {
     vector<string> lineIn;
     string internal;
     while (std::getline(s1, word, '"')) {
-      // cout << endl << "input " << word << endl;
       if (word != ";" && word.size() != 0 && word != ";;") {
         internal.append(word);
       } else if (word == ";") {
         lineIn.push_back(internal);
-        // cout << "word " << internal << endl;
         internal = "";
       } else if (word == ";;") {
         lineIn.push_back(internal);
-        // cout << "word " << internal << endl;
         lineIn.push_back("NULL");
         internal = "";
       }
     }
-    // cout << endl;
-    // cout << "teste0 " << lineIn[0] << endl;
-    // cout << "teste1 " << lineIn[1] << endl;
-    // cout << "teste2 " << lineIn[2] << endl;
-    // cout << "teste3 " << lineIn[3] << endl;
-    // cout << "teste4 " << lineIn[4] << endl;
-    // cout << "teste5 " << lineIn[5] << endl;
-    // cout << "teste6 " << lineIn[6] << endl;
     Line* out = new Line(stoi(lineIn[0]), lineIn[1], stoi(lineIn[2]), lineIn[3],
                          stoi(lineIn[4]), lineIn[5], lineIn[6]);
 
@@ -109,11 +98,9 @@ int main(int argc, char const* argv[]) {
   while (!reader.isAtEndOfFile()) {
     line = reader.getNextFormattedLine();
     if (!hash.insertItem(*line)) {
-      // cout << endl << "n buto" << endl;
       col++;
     }
     delete line;
-    // cout << "linha: " << line->id << endl;
   }
   cout << "numcol: " << col << endl;
   hash.closeFile();

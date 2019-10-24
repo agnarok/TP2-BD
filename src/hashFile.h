@@ -13,7 +13,7 @@ class HashFile {
  public:
   HashFile(bool createFile);
   void closeFile();
-  Line* getLineFromBlock(int lineId);
+  Line* getLineFromBlock(int lineId,int &readBlocks, int &totalBlocks);
   int calculateHash(int id);
   bool insertItem(Line& line);
   int commitInsertion(Block *outputBlock);

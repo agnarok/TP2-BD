@@ -10,12 +10,15 @@ int main(int argc, char const* argv[]) {
     return 0;
   }
   int id = stoi(argv[1]);
-  cout << "id entrada: " << id << endl;
+  int numBlocosLidos;
+  int totalBlocos;
   HashFile hash(false);
-  Line* pLine = hash.getLineFromBlock(id);
+  Line* pLine = hash.getLineFromBlock(id, numBlocosLidos, totalBlocos);
   if (pLine == nullptr) {
     cout << endl << "nao existe" << endl;
   } else {
+    cout << "Número de blocos lidos: " << numBlocosLidos << endl;
+    cout << "Número de blocos do arquivo de dados: " << totalBlocos << endl;
     pLine->print();
   }
   hash.closeFile();
