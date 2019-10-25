@@ -68,6 +68,7 @@ public:
     }
 
     unsigned int busca(const T &chave){
+        this->blockNums = 1;
         busca(raiz,chave);
     }
 
@@ -77,6 +78,7 @@ public:
     unsigned int raizOffset;
     int ordem;
     int max_chaves;
+    int blockNums;
 
     FILE *b_file;
 
@@ -359,11 +361,12 @@ unsigned int ArvoreBSec<T>::busca(NoBSec<T> *no,const T &chave){
         return -1;
     } else{
 
-    if(readNodefromDisk(&nextNode, no->filhos[limitInf])){
-        return busca(&nextNode,chave);
-    }  else {
-        // melhorar aqui
-        return -1;
-    }
+        if(readNodefromDisk(&nextNode, no->filhos[limitInf])){
+            ++(this->blockNums);
+            return busca(&nextNode,chave);
+        }  else {
+            // melhorar aqui
+            return -1;
+        }
     }
 }
