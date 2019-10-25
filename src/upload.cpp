@@ -42,7 +42,7 @@ class CsvReader {
     string nextWord;
     getline(fin, word);
 
-    // Error checking routines. checkNumberofAtt checks 
+    // Error checking routines. checkNumberofAtt checks
     // the amount of attributes read from a line. If its too small,
     // it appends the next line. (This catches multi-line strings).
     if (!this->checkNumberofAtt(word)) {
@@ -105,8 +105,8 @@ int main(int argc, char const* argv[]) {
   unsigned int col;
   while (!reader.isAtEndOfFile()) {
     dataOffset = reader.fin.tellg();
-    // cout << "estou aqui no arquivo " << dataOffset << endl;
     line = reader.getNextFormattedLine();
+    cout << line->titulo << endl;
     // arvore.inserir(line->id, dataOffset);
     secondaryIndex.inserir(line->titulo, dataOffset);
     // if (!hash.insertItem(*line)) {
