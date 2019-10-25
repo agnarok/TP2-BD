@@ -3,7 +3,7 @@
 #define PRIMARY_INDEX_PATH "./data/primary.btr"
 #define OFFSET_ROOT_PATH "./data/root_offset_file"
 #define SECONDARY_INDEX_PATH "./data/secondary.btr"
-#define ORDER_MAIN 500
+#define ORDER_MAIN 250
 // size in bytes of a bucket
 #define BUCKET_SIZE 8192
 //size in bytes of a block
