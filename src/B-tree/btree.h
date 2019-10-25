@@ -188,7 +188,7 @@ void ArvoreB<T>::inserir(NoB<T> *no, NoB<T> *pai,
 {
     int pos = buscar_chave_maior(no, chave);
     if (no->folha) {
-        cout << "inserindo " << chave << " em " << dataOffset << endl;
+        // cout << "inserindo " << chave << " em " << dataOffset << endl;
         deslocar_chaves(no, pos);
         no->chaves[pos] = chave;
         no->num_chaves++;
@@ -325,13 +325,9 @@ unsigned int ArvoreB<T>::busca(NoB<T> *no,const T &chave){
     while (limitInf<=limitSup){
         meio = (limitInf+limitSup)/2;
         if(chave == no->chaves[meio]){
-            if(readNodefromDisk(&nextNode, no->filhos[meio])){
-                if(nextNode.folha){
-                    return nextNode.filhos[meio];
-                }
-            } else {
-                return busca(&nextNode,chave);
-            }
+            if (no->folha) {
+                return no->filhos[meio];
+            } 
         }
         if(chave > no->chaves[meio]){
             limitInf = meio +1;

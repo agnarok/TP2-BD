@@ -99,20 +99,13 @@ int main(int argc, char const* argv[]) {
   // HashFile hash(true);
   ArvoreB<int> arvore(2,PRIMARY_INDEX_PATH);
   unsigned int dataOffset;
-  unsigned int lastBlockSize = 0;
   unsigned int col;
   while (!reader.isAtEndOfFile()) {
     dataOffset = reader.fin.tellg();
-    cout << "estou aqui no arquivo " << dataOffset << endl;
+    // cout << "estou aqui no arquivo " << dataOffset << endl;
     line = reader.getNextFormattedLine();
 
-    if (lastBlockSize + dataOffset > 4096) {
-      // colocar no proximo bloco
-      lastBlockSize = 0;
-      arvore.inserir(line->id, dataOffset);
-    }
     arvore.inserir(line->id, dataOffset);
-    lastBlockSize += dataOffset;
     // if (!hash.insertItem(*line)) {
     //   col++;
     // }
