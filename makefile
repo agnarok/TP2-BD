@@ -10,14 +10,21 @@ upload:
 btree:
 	g++ src/B-tree/exemplo.cpp src/Line.cpp -o btree && ./btree && rm -rf btree
 
+
 find: createFind
 	./findrec $(id)
 
-seek: createSeek
+seek1: createSeek
 	./seek1 $(id)
+
+seek2: createSeek2
+	./seek2 $(titu)
 
 createSeek:
 	g++ src/B-tree/seek1.cpp -o seek1
+
+createSeek2:
+	g++ src/B-tree/seek2.cpp -o seek2
 
 createFind:
 	g++ src/findrec.cpp src/Block.cpp src/hashFile.cpp src/Line.cpp -o findrec

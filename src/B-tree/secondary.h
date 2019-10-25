@@ -44,12 +44,12 @@ public:
     // array of block offset integers
     unsigned int diskOffset;
     int num_chaves;
-    unsigned int filhos[PRIMARY_ORDER_MAIN+2];
-    T chaves[PRIMARY_ORDER_MAIN+1];
+    unsigned int filhos[SECONDARY_ORDER_MAIN+2];
+    T chaves[SECONDARY_ORDER_MAIN+1];
     bool folha;
 
     // filling so fwrite can read 4096 bytes
-     char dump[PRIMARY_INDEX_DUMP];
+     char dump[SECONDARY_INDEX_DUMP];
 };
 
 
@@ -275,16 +275,16 @@ template<typename T>
 ArvoreB<T>::ArvoreB(int ordem, string filePath)
 {
     this->raiz = new NoB<T>;
-    this->ordem = PRIMARY_ORDER_MAIN;
-    this->max_chaves = ordem;
+    this->ordem = SECONDARY_ORDER_MAIN;
+    this->max_chaves = SECONDARY_ORDER_MAIN;
 
     this->b_file = fopen(filePath.c_str(), "r+");
     if(this->b_file == nullptr){
         this->b_file = fopen(filePath.c_str(), "w+");
     }
-    this->raizOffsetFile = fopen(PRIMARY_OFFSET_ROOT_PATH, "r+");
+    this->raizOffsetFile = fopen(SECONDARY_OFFSET_ROOT_PATH, "r+");
     if(this->raizOffsetFile == nullptr){
-        this->raizOffsetFile = fopen(PRIMARY_OFFSET_ROOT_PATH, "w+");        
+        this->raizOffsetFile = fopen(SECONDARY_OFFSET_ROOT_PATH, "w+");        
     }
     fread(&(this->raizOffset),sizeof(this->raizOffset),1,this->raizOffsetFile);
     cout<< "raiz offset "<<this->raizOffset << endl;

@@ -2,22 +2,25 @@
 #include <sstream>
 #include <iostream>
 #include "../definitions.h"
-#include "btree.h"
+#include "secondary.h"
 
 int main(int argc, char const* argv[]) {
+
+  cout << argv[1] << endl;
   if (argc == 1) {
     cout << "No input file -- exiting." << endl;
     return 0;
   }
 
   fstream fin;
-  fin.open("./data/entrada.csv");
+  fin.open("./data/sample_small.csv");
 
-  int id = stoi(argv[1]);
+  char titulo[300];
+  strcpy(titulo, argv[1]);
   int numBlocosLidos;
   int totalBlocos;
-  ArvoreB<int> arvore(2, PRIMARY_INDEX_PATH);
-  unsigned int out = arvore.busca(id);
+  ArvoreBSec<char[300]> arvore(2, SECONDARY_INDEX_PATH);
+  unsigned long long int out = arvore.busca(titulo);
   cout << "resultado: " << out << endl;
   fin.seekg(out);
   

@@ -6,6 +6,7 @@
 #include "definitions.h"
 #include "hashFile.h"
 #include "B-tree/btree.h"
+#include "B-tree/secondary.h"
 
 // para printar partes do csv.
 // sed -n '2635p' entrada.csv | awk -F ';' '{print $3 $4}'
@@ -97,15 +98,17 @@ int main(int argc, char const* argv[]) {
   CsvReader reader(argv[1]);
   Line* line;
   // HashFile hash(true);
-  ArvoreB<int> arvore(2,PRIMARY_INDEX_PATH);
+  // ArvoreB<int> arvore(2,PRIMARY_INDEX_PATH);
+  ArvoreBSec<char[300]> secondaryIndex(2,SECONDARY_INDEX_PATH);
+
   unsigned int dataOffset;
   unsigned int col;
   while (!reader.isAtEndOfFile()) {
     dataOffset = reader.fin.tellg();
     // cout << "estou aqui no arquivo " << dataOffset << endl;
     line = reader.getNextFormattedLine();
-
-    arvore.inserir(line->id, dataOffset);
+    // arvore.inserir(line->id, dataOffset);
+    secondaryIndex.inserir(line->titulo, dataOffset);
     // if (!hash.insertItem(*line)) {
     //   col++;
     // }
