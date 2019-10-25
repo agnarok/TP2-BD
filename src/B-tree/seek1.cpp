@@ -34,13 +34,5 @@ int main(int argc, char const* argv[]) {
   } while (stoi(word) != id);
 
   cout << wordOut << endl;
-  // if (pLine == nullptr) {
-  //   cout << endl << "nao existe" << endl;
-  // } else {
-  //   cout << "Número de blocos lidos: " << numBlocosLidos << endl;
-  //   cout << "Número de blocos do arquivo de dados: " << totalBlocos << endl;
-  //   pLine->print();
-  // }
-  // hash.closeFile();
   return 0;
 }

@@ -321,10 +321,17 @@ unsigned int ArvoreB<T>::busca(NoB<T> *no,const T &chave){
     int meio;
     int limitSup = no->num_chaves - 1;
     int limitInf = 0;
+    NoB<T> nextNode;
     while (limitInf<=limitSup){
         meio = (limitInf+limitSup)/2;
         if(chave == no->chaves[meio]){
-            return no->filhos[meio];
+            if(readNodefromDisk(&nextNode, no->filhos[meio])){
+                if(nextNode.folha){
+                    return nextNode.filhos[meio];
+                }
+            } else {
+                return busca(&nextNode,chave);
+            }
         }
         if(chave > no->chaves[meio]){
             limitInf = meio +1;
@@ -339,7 +346,6 @@ unsigned int ArvoreB<T>::busca(NoB<T> *no,const T &chave){
         return -1;
     } else{
 
-    NoB<T> nextNode;
     if(readNodefromDisk(&nextNode, no->filhos[limitInf])){
         return busca(&nextNode,chave);
     }  else {
