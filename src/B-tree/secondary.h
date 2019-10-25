@@ -45,7 +45,7 @@ public:
     // array of block offset integers
     unsigned int diskOffset;
     int num_chaves;
-    unsigned int filhos[SECONDARY_ORDER_MAIN+2];
+    unsigned long long int filhos[SECONDARY_ORDER_MAIN+2];
     T chaves[SECONDARY_ORDER_MAIN+1];
     bool folha;
 
@@ -247,8 +247,11 @@ void ArvoreBSec<T>::dividir_no(NoBSec<T> *no, NoBSec<T> *pai, unsigned int dataO
     novo->filhos[j] = no->filhos[i];
 
     // Aqui sera feita a alteração para transformar em Arvore B+
+    cout << "num " << no->num_chaves << endl;
     for (int i = meio + 1; i <= no->num_chaves; i++) { //Nó da esquerda
         if(i==max_chaves && no->folha){
+            cout << "teste " << no->filhos[i];
+            cout << " teste " << no->filhos[i-1] << endl;
             no->filhos[i] = novo->diskOffset;
         } else {
             // colocar dados
@@ -256,7 +259,9 @@ void ArvoreBSec<T>::dividir_no(NoBSec<T> *no, NoBSec<T> *pai, unsigned int dataO
         }
     }
 
+
     const T &promovida = no->chaves[meio];
+
 
     int pos = buscar_chave_maior(pai, promovida);
 

@@ -97,21 +97,21 @@ int main(int argc, char const* argv[]) {
   }
   CsvReader reader(argv[1]);
   Line* line;
-  // HashFile hash(true);
-  // ArvoreB<int> arvore(2,PRIMARY_INDEX_PATH);
-  ArvoreBSec<char[300]> secondaryIndex(2,SECONDARY_INDEX_PATH);
+  HashFile hash(true);
+  ArvoreB<int> arvore(2,PRIMARY_INDEX_PATH);
+  // ArvoreBSec<char[300]> secondaryIndex(2,SECONDARY_INDEX_PATH);
 
-  unsigned int dataOffset;
+  unsigned long long int dataOffset;
   unsigned int col;
   while (!reader.isAtEndOfFile()) {
     dataOffset = reader.fin.tellg();
     line = reader.getNextFormattedLine();
-    cout << line->titulo << endl;
-    // arvore.inserir(line->id, dataOffset);
-    secondaryIndex.inserir(line->titulo, dataOffset);
-    // if (!hash.insertItem(*line)) {
-    //   col++;
-    // }
+    // cout << line->titulo << endl;
+    arvore.inserir(line->id, dataOffset);
+    // secondaryIndex.inserir(line->titulo, dataOffset);
+    if (!hash.insertItem(*line)) {
+      col++;
+    }
     delete line;
   }
   cout << "numcol: " << col << endl;

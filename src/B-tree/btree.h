@@ -44,7 +44,7 @@ public:
     // array of block offset integers
     unsigned int diskOffset;
     int num_chaves;
-    unsigned int filhos[PRIMARY_ORDER_MAIN+2];
+    unsigned long long int filhos[PRIMARY_ORDER_MAIN+2];
     T chaves[PRIMARY_ORDER_MAIN+1];
     bool folha;
 
@@ -59,14 +59,14 @@ class ArvoreB {
 public:
     ArvoreB(int ordem, string filename);
 
-    void inserir(const T &chave, unsigned int dataOffset);
+    void inserir(const T &chave, unsigned long long int dataOffset);
     
     // Desenha a árvore
     void desenhar() {
         desenhar(this->raizOffset, 0);
     }
 
-    T busca(const T &chave){
+    unsigned long long int busca(const T &chave){
         busca(raiz,chave);
     }
 
@@ -79,9 +79,9 @@ public:
 
     FILE *b_file;
 
-    void inserir(NoB<T> *no, NoB<T> *pai, const T &chave, unsigned int dataOffset);
+    void inserir(NoB<T> *no, NoB<T> *pai, const T &chave, unsigned long long int dataOffset);
 
-    void dividir_no(NoB<T> *no, NoB<T> *pai, unsigned int dataOffset);
+    void dividir_no(NoB<T> *no, NoB<T> *pai, unsigned long long int dataOffset);
 
     int buscar_chave_maior(NoB<T> *no, const T &chave);
 
@@ -91,11 +91,11 @@ public:
 
     void desenhar(unsigned int offset, int nivel);
 
-    unsigned int busca(NoB<T> *no,const T &chave);
+    unsigned long long int busca(NoB<T> *no,const T &chave);
 
-    void commitNodetoDisk(NoB<T> *no, unsigned int offset);
+    void commitNodetoDisk(NoB<T> *no, unsigned long long int offset);
 
-    int readNodefromDisk(NoB<T> *output, unsigned int offset);
+    int readNodefromDisk(NoB<T> *output, unsigned long long int offset);
 
     unsigned int getNextNodeOffset();
 };
@@ -108,13 +108,13 @@ unsigned int ArvoreB<T>::getNextNodeOffset() {
 }
 
 template<typename T>
-void ArvoreB<T>::commitNodetoDisk(NoB<T> *no, unsigned int offset) {
+void ArvoreB<T>::commitNodetoDisk(NoB<T> *no, unsigned long long int offset) {
     fseek(this->b_file, offset, SEEK_SET);
     fwrite(no, BLOCK_SIZE, 1, this->b_file);
 }
 
 template<typename T>
-int ArvoreB<T>::readNodefromDisk(NoB<T> *outputNode, unsigned int offset) {
+int ArvoreB<T>::readNodefromDisk(NoB<T> *outputNode, unsigned long long int offset) {
     fseek(this->b_file, offset, SEEK_SET);
     return fread(outputNode, BLOCK_SIZE, 1, this->b_file);
 }
@@ -178,7 +178,7 @@ void ArvoreB<T>::deslocar_chaves(NoB<T> *no, int pos)
 
 // Função chamada pelo usuário para inserção
 template<typename T>
-void ArvoreB<T>::inserir(const T &chave, unsigned int dataOffset)
+void ArvoreB<T>::inserir(const T &chave, unsigned long long int dataOffset)
 {
     inserir(raiz, NULL, chave, dataOffset);
 }
@@ -188,7 +188,7 @@ void ArvoreB<T>::inserir(const T &chave, unsigned int dataOffset)
 // árvore: privada, não pode ser utilizada pelo usuário
 template<typename T>
 void ArvoreB<T>::inserir(NoB<T> *no, NoB<T> *pai,
-        const T &chave, unsigned int dataOffset)
+        const T &chave, unsigned long long int dataOffset)
 {
     int pos = buscar_chave_maior(no, chave);
     if (no->folha) {
@@ -213,7 +213,7 @@ void ArvoreB<T>::inserir(NoB<T> *no, NoB<T> *pai,
 
 
 template<typename T>
-void ArvoreB<T>::dividir_no(NoB<T> *no, NoB<T> *pai, unsigned int dataOffset)
+void ArvoreB<T>::dividir_no(NoB<T> *no, NoB<T> *pai, unsigned long long int dataOffset)
 {
     int i, j;
     int meio = no->num_chaves / 2;
@@ -279,7 +279,7 @@ ArvoreB<T>::ArvoreB(int ordem, string filePath)
 {
     this->raiz = new NoB<T>;
     this->ordem = PRIMARY_ORDER_MAIN;
-    this->max_chaves = ordem;
+    this->max_chaves = PRIMARY_ORDER_MAIN;
 
     this->b_file = fopen(filePath.c_str(), "r+");
     if(this->b_file == nullptr){
@@ -323,7 +323,7 @@ NoB<T> *ArvoreB<T>::criar_no(bool folha)
 }
 
 template<typename T>
-unsigned int ArvoreB<T>::busca(NoB<T> *no,const T &chave){
+unsigned long long int ArvoreB<T>::busca(NoB<T> *no,const T &chave){
     int meio;
     int limitSup = no->num_chaves - 1;
     int limitInf = 0;
