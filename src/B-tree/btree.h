@@ -336,6 +336,7 @@ T ArvoreB<T>::busca(NoB<T> *no,const T &chave){
     }
     if(no->filhos[limitInf]==-1){
         std::cout<< "num ta aq mermao\n";
+        return -1;
     } else{
 
     NoB<T> nextNode;
@@ -343,7 +344,7 @@ T ArvoreB<T>::busca(NoB<T> *no,const T &chave){
         return busca(&nextNode,chave);
     }  else {
         // melhorar aqui
-        return nullptr;
+        return -1;
     }
     }
 } 

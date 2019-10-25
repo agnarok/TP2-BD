@@ -100,12 +100,12 @@ int main(int argc, char const* argv[])
 	// Line* line;
 	// line = reader.getNextFormattedLine();
 	// cout << line->id << endl; 
-	int i = 0;
-	while(i < 10) {
-		cout << "\ninserir: " << i << endl;
-		arvore.inserir(i);
-		i ++;
-	}
+	// int i = 0;
+	// while(i < 100) {
+	// 	cout << "\ninserir: " << i << endl;
+	// 	arvore.inserir(i);
+	// 	i ++;
+	// }
 	cout << "Key test: " << arvore.raiz->chaves[0] << endl;
-	
+  cout << "Search result: " << arvore.busca(75) << endl;
 }
