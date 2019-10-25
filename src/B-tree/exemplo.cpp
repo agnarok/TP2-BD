@@ -101,11 +101,11 @@ int main(int argc, char const* argv[])
 	// line = reader.getNextFormattedLine();
 	// cout << line->id << endl; 
 	int i = 0;
-	while(i < 6) {
+	while(i < 3) {
 		cout << "\ninserir: " << i << endl;
 		arvore.inserir(i);
 		i ++;
 	}
-	cout << sizeof(NoB<int>) << endl;
-
+	cout << "Key test: " << arvore.raiz->chaves[2] << endl;
+	
 }

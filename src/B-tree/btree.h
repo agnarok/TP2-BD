@@ -40,13 +40,13 @@ public:
 public:
     // verificar tamanho do no depois
     friend class ArvoreB<T>;
-    T *chaves;
 
     // every time we access a pointer by memory in b+tree in memory, we must translate that access with a disk offset (fread.)
     // array of block offset integers
-    unsigned int *filhos;
     unsigned int diskOffset;
     int num_chaves;
+    unsigned int filhos[ORDER_MAIN+2];
+    T chaves[ORDER_MAIN+1];
     bool folha;
 };
 
@@ -69,6 +69,7 @@ public:
     }
 
 public:
+    FILE* raizOffsetFile;
     NoB<T> *raiz;
     unsigned int raizOffset;
     int ordem;
@@ -101,18 +102,18 @@ public:
 template <typename T>
 unsigned int ArvoreB<T>::getNextNodeOffset() {
     fseek(this->b_file, 0,SEEK_END);
-    cout << "\nftell " << ftell(this->b_file) << endl;
     return ftell(this->b_file);
 }
 
 template<typename T>
 void ArvoreB<T>::commitNodetoDisk(NoB<T> *no, unsigned int offset) {
-    fseek(this->b_file, SEEK_SET, offset);
+    fseek(this->b_file, offset, SEEK_SET);
     fwrite(no, BLOCK_SIZE, 1, this->b_file);
 }
 
 template<typename T>
 int ArvoreB<T>::readNodefromDisk(NoB<T> *outputNode, unsigned int offset) {
+    fseek(this->b_file, offset, SEEK_SET);
     return fread(outputNode, BLOCK_SIZE, 1, this->b_file);
 }
 
@@ -137,7 +138,6 @@ void ArvoreB<T>::desenhar(NoB<T> *raiz, int nivel)
         }
     }
 }
-
 
 // Função auxiliar para encontrar a posição da primeira
 // chave maior ou igual a uma chave de referência; usada
@@ -175,18 +175,6 @@ void ArvoreB<T>::deslocar_chaves(NoB<T> *no, int pos)
 template<typename T>
 void ArvoreB<T>::inserir(const T &chave)
 {
-    // Se a raiz está nula, então cria um novo nó folha
-    if (raiz == NULL) {
-        if(!readNodefromDisk(raiz,this->raizOffset)) {
-            // if root isnt in file structure
-            raiz = criar_no(true);
-            raiz->diskOffset = getNextNodeOffset();
-            cout << "criei uma raiz nova" << endl;
-        }
-    }
-    cout << "numero de chaves da raiz: "<< raiz->num_chaves << endl;
-    cout << "raiz: "<< raiz << endl;
-    cout << "inserindo" << endl;
     inserir(raiz, NULL, chave);
 }
 
@@ -199,12 +187,11 @@ void ArvoreB<T>::inserir(NoB<T> *no, NoB<T> *pai,
 {
 
     int pos = buscar_chave_maior(no, chave);
-    cout << "pos: " << pos << endl;
-    cout << "chave: " << no->chaves[0] << endl;
     if (no->folha) {
         deslocar_chaves(no, pos);
         no->chaves[pos] = chave;
         no->num_chaves++;
+        commitNodetoDisk(no,no->diskOffset);
     }
     else {
         NoB<T> nextNode;
@@ -214,10 +201,8 @@ void ArvoreB<T>::inserir(NoB<T> *no, NoB<T> *pai,
     }
 
     if (no->num_chaves > max_chaves) {
-        cout << "espoquei" << endl;
         dividir_no(no, pai);
     }
-    commitNodetoDisk(no,no->diskOffset);
 }
 
 
@@ -233,13 +218,18 @@ void ArvoreB<T>::dividir_no(NoB<T> *no, NoB<T> *pai)
         pai->diskOffset = getNextNodeOffset();
         raiz = pai;
         raiz->filhos[0] = no->diskOffset;
+        commitNodetoDisk(raiz, raiz->diskOffset);
+        this->raizOffset = raiz->diskOffset;
+        cout << "OFFSET : " << this->raizOffset << endl;
+        fseek(this->raizOffsetFile, 0, SEEK_SET);
+        fwrite(&this->raizOffset,sizeof(this->raizOffset), 1, this->raizOffsetFile);
     }
 
-    cout << "\nespocando " << no->num_chaves << endl;
     
     //segfault aqui
     NoB<T> *novo = criar_no(no->folha);
     novo->diskOffset = getNextNodeOffset();
+    commitNodetoDisk(novo, novo->diskOffset);
 
     for (i = meio + 1, j = 0; i < no->num_chaves; i++, j++) { //Nó da direita
         novo->chaves[j] = no->chaves[i];
@@ -273,6 +263,8 @@ void ArvoreB<T>::dividir_no(NoB<T> *no, NoB<T> *pai)
     no->num_chaves = meio + 1;
     pai->num_chaves++;
 
+    cout << "xuei " << sizeof(pai) << endl;
+    commitNodetoDisk(no,no->diskOffset);
     commitNodetoDisk(novo, novo->diskOffset);
     commitNodetoDisk(pai, pai->diskOffset);
 }
@@ -281,11 +273,27 @@ void ArvoreB<T>::dividir_no(NoB<T> *no, NoB<T> *pai)
 template<typename T>
 ArvoreB<T>::ArvoreB(int ordem, string filePath)
 {
-    assert(ordem > 1);
-    this->ordem = ordem;
-    this->raiz = NULL;
+    this->raiz = new NoB<T>;
+    this->ordem = ORDER_MAIN;
     this->max_chaves = 2 * ordem;
-    this->b_file = fopen(filePath.c_str(), "w+");
+
+    this->b_file = fopen(filePath.c_str(), "r+");
+    if(this->b_file == nullptr){
+        this->b_file = fopen(filePath.c_str(), "w+");
+    }
+    this->raizOffsetFile = fopen(OFFSET_ROOT_PATH, "r+");
+    if(this->raizOffsetFile == nullptr){
+        this->raizOffsetFile = fopen(OFFSET_ROOT_PATH, "w+");        
+    }
+    fread(&(this->raizOffset),sizeof(this->raizOffset),1,this->raizOffsetFile);
+    cout<< "raiz offset "<<this->raizOffset << endl;
+    if(!readNodefromDisk(raiz,this->raizOffset)) {
+        cout << "criar" << endl;
+        raiz = criar_no(true);
+        raiz->diskOffset = getNextNodeOffset();
+        commitNodetoDisk(raiz,raiz->diskOffset);
+    }
+
 }
 
 
@@ -295,8 +303,8 @@ NoB<T> *ArvoreB<T>::criar_no(bool folha)
 {
     NoB<T> *novo = new NoB<T>;
 
-    novo->chaves = new T[max_chaves + 1];
-    novo->filhos = new unsigned int [max_chaves + 2];
+    // novo->chaves = new T[max_chaves + 1];
+    // novo->filhos = new unsigned int [max_chaves + 2];
     
     for (int i = 0; i <= max_chaves + 1; i++) {
         novo->filhos[i] = -1;
@@ -328,7 +336,7 @@ T ArvoreB<T>::busca(NoB<T> *no,const T &chave){
     }
     if(no->filhos[limitInf]==-1){
         std::cout<< "num ta aq mermao\n";
-    }else{
+    } else{
 
     NoB<T> nextNode;
     if(readNodefromDisk(&nextNode, no->filhos[limitInf])){
