@@ -344,7 +344,8 @@ unsigned int ArvoreBSec<T>::busca(NoBSec<T> *no,const T &chave){
             // std::cout << limitSup <<" menor\n";
         }
     }
-    if(no->filhos[limitInf]==-1){
+    if(no->filhos[limitInf]==4294967295){
+        cout<< "Nao encontrei na arvore :<\n";
         return -1;
     } else{
 
