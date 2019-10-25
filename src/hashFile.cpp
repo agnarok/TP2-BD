@@ -34,7 +34,8 @@ int HashFile::commitInsertion(Block *outputBlock) {
  */
 bool HashFile::insertItem(Line &line) {
   int inputBucket = calculateHash(line.id);
-  unsigned long long int offset = inputBucket * ((unsigned long long int) BUCKET_SIZE);
+  unsigned long long int offset =
+      inputBucket * ((unsigned long long int)BUCKET_SIZE);
   Block outputBlock;
   fseek(this->file, offset, SEEK_SET);
   if (!fread(&outputBlock, sizeof(Block), 1, this->file)) {
@@ -43,9 +44,6 @@ bool HashFile::insertItem(Line &line) {
   fseek(this->file, offset, SEEK_SET);
   if (outputBlock.insertItem(line)) {
     commitInsertion(&outputBlock);
-    if (line.id == 500000) {
-      fseek(this->file, offset, SEEK_SET);
-    }
     return true;
   } else {
     offset += BLOCK_SIZE;
@@ -56,7 +54,6 @@ bool HashFile::insertItem(Line &line) {
     if (outputBlock.insertItem(line)) {
       fseek(this->file, offset, SEEK_SET);
       commitInsertion(&outputBlock);
-      int t = commitInsertion(&outputBlock);
 
       return true;
     };
@@ -66,16 +63,17 @@ bool HashFile::insertItem(Line &line) {
 
 /*
  * readBlocks é o número de blocos lidos para um get.
- * totalBlocks é o número total de blocos do arquivo. (pedido no trabalho)  
-*/
-Line *HashFile::getLineFromBlock(int lineId, int &readBlocks, int &totalBlocks) {
-  totalBlocks = LARGE_PRIME*2;
+ * totalBlocks é o número total de blocos do arquivo. (pedido no trabalho)
+ */
+Line *HashFile::getLineFromBlock(int lineId, int &readBlocks,
+                                 int &totalBlocks) {
+  totalBlocks = LARGE_PRIME * 2;
   readBlocks = 0;
   int outputBucket = calculateHash(lineId);
-  unsigned long long int offset = outputBucket * ((unsigned long long int) BUCKET_SIZE);
+  unsigned long long int offset =
+      outputBucket * ((unsigned long long int)BUCKET_SIZE);
   Block outputBlock;
   Line *outputLine;
-
   fseek(this->file, offset, SEEK_SET);
   fread(&outputBlock, BLOCK_SIZE, 1, this->file);
   readBlocks++;

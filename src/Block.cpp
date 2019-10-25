@@ -20,7 +20,6 @@ Line *Block::getItem(unsigned int id) {
   Line *line;
   while (cursor < this->usedBytes) {
     line = reinterpret_cast<Line *>(&this->rawData[cursor]);
-    cout << "linha " << line->id << endl;
     if (line->id == id) {
       return line;
     }

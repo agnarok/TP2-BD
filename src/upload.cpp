@@ -93,7 +93,7 @@ int main(int argc, char const* argv[]) {
   CsvReader reader(argv[1]);
   Line* line;
   HashFile hash(true);
-  int col;
+  unsigned int col;
   while (!reader.isAtEndOfFile()) {
     line = reader.getNextFormattedLine();
     if (!hash.insertItem(*line)) {
