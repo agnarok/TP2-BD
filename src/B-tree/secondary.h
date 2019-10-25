@@ -250,7 +250,7 @@ void ArvoreBSec<T>::dividir_no(NoBSec<T> *no, NoBSec<T> *pai, unsigned int dataO
             no->filhos[i] = novo->diskOffset;
         } else {
             // colocar dados
-            no->filhos[i] = dataOffset;
+            no->filhos[i] = -1;
         }
     }
 
@@ -345,7 +345,6 @@ unsigned int ArvoreBSec<T>::busca(NoBSec<T> *no,const T &chave){
         }
     }
     if(no->filhos[limitInf]==-1){
-        std::cout<< "num ta aq mermao\n";
         return -1;
     } else{
 
