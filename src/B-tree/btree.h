@@ -288,6 +288,8 @@ ArvoreB<T>::ArvoreB(int ordem, string filePath)
     this->raizOffsetFile = fopen(PRIMARY_OFFSET_ROOT_PATH, "r+");
     if(this->raizOffsetFile == nullptr){
         this->raizOffsetFile = fopen(PRIMARY_OFFSET_ROOT_PATH, "w+");        
+        this->raizOffset=0;
+        fwrite(&this->raizOffset,sizeof(this->raizOffset), 1, this->raizOffsetFile);
     }
     fread(&(this->raizOffset),sizeof(this->raizOffset),1,this->raizOffsetFile);
     cout<< "raiz offset "<<this->raizOffset << endl;

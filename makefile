@@ -1,5 +1,5 @@
 all: upload
-	./upload data/$(data)
+	./upload data/$(data) && rm -rf upload
 # printy: src/upload.o src/Block.o
 # 	g++ -o printy src/upload.o src/Block.o 
 upload:

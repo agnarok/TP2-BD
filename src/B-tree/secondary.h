@@ -31,7 +31,7 @@ public:
         using std::cout;
         cout << "(" << num_chaves << ")";
         for (int i = 0; i < num_chaves; i++) {
-            cout << " " << chaves[i];
+            cout << " | " << chaves[i];
         }
         if (folha) {
             cout << " [f]";
@@ -64,7 +64,7 @@ public:
 
     // Desenha a árvore
     void desenhar() {
-        desenhar(raiz, 0);
+        desenhar(this->raizOffset, 0);
     }
 
     unsigned int busca(const T &chave){
@@ -90,7 +90,7 @@ public:
 
     NoBSec<T> *criar_no(bool folha);
 
-    void desenhar(NoBSec<T> *raiz, int nivel);
+    void desenhar(unsigned int offset, int nivel);
 
     unsigned int busca(NoBSec<T> *no,const T &chave);
 
@@ -123,25 +123,27 @@ int ArvoreBSec<T>::readNodefromDisk(NoBSec<T> *outputNode, unsigned int offset) 
 
 // Faz o desenho da árvore (arranjei por causa da monitoria hehehehe é top)
 template<typename T>
-void ArvoreBSec<T>::desenhar(NoBSec<T> *raiz, int nivel)
+void ArvoreBSec<T>::desenhar(unsigned int offset, int nivel)
 {
+
+    NoBSec<T> no;
+    readNodefromDisk(&no, offset);
     // Insere espaços antes do nó
     printf("%*s", nivel * 4, "");
 
     // Desenha o nó
-    raiz->imprimir_no();
+    no.imprimir_no();
 
     // Se não for uma folha, então chama recursivamente para
     // desenhar os filhos
-    if (!raiz->folha) {
-        for (int i = 0; i <= raiz->num_chaves; i++) {
-            if(raiz->filhos[i]!=NULL){
-                desenhar(raiz->filhos[i], nivel + 1);
+    if (!no.folha) {
+        for (int i = 0; i <= no.num_chaves; i++) {
+            if(no.filhos[i] != -1){
+                desenhar(no.filhos[i], nivel + 1);
             }
         }
     }
 }
-
 // Função auxiliar para encontrar a posição da primeira
 // chave maior ou igual a uma chave de referência; usada
 // para achar a posição na qual uma nova chave deve ser
@@ -191,7 +193,7 @@ void ArvoreBSec<T>::inserir(NoBSec<T> *no, NoBSec<T> *pai,
 {
     int pos = buscar_chave_maior(no, chave);
     if (no->folha) {
-        // cout << "inserindo " << chave << " em " << dataOffset << endl;
+        // cout << "inserindo " << chave << " em " << dataOffset << " NA POSIÇÃO: " << pos <<endl;
         deslocar_chaves(no, pos);
         // no->chaves[pos] = chave;
         strcpy(no->chaves[pos], chave);
@@ -290,8 +292,11 @@ ArvoreBSec<T>::ArvoreBSec(int ordem, string filePath)
     this->raizOffsetFile = fopen(SECONDARY_OFFSET_ROOT_PATH, "r+");
     if(this->raizOffsetFile == nullptr){
         this->raizOffsetFile = fopen(SECONDARY_OFFSET_ROOT_PATH, "w+");
+        this->raizOffset = 0;
+        fwrite(&this->raizOffset,sizeof(this->raizOffset), 1, this->raizOffsetFile);
+    } else {
+        fread(&(this->raizOffset),sizeof(this->raizOffset),1,this->raizOffsetFile);
     }
-    fread(&(this->raizOffset),sizeof(this->raizOffset),1,this->raizOffsetFile);
     cout<< "raiz offset "<<this->raizOffset << endl;
     if(!readNodefromDisk(raiz,this->raizOffset)) {
         cout << "criar" << endl;
@@ -344,7 +349,7 @@ unsigned int ArvoreBSec<T>::busca(NoBSec<T> *no,const T &chave){
             // std::cout << limitSup <<" menor\n";
         }
     }
-    if(no->filhos[limitInf]==4294967295){
+    if(no->filhos[limitInf]==-1){
         cout<< "Nao encontrei na arvore :<\n";
         return -1;
     } else{
