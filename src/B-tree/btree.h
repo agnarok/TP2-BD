@@ -48,7 +48,7 @@ public:
     unsigned int filhos[ORDER_MAIN+2];
     T chaves[ORDER_MAIN+1];
     bool folha;
-    char dump[4000];
+    char dump[4040];
 };
 
 
@@ -264,7 +264,6 @@ void ArvoreB<T>::dividir_no(NoB<T> *no, NoB<T> *pai)
     no->num_chaves = meio + 1;
     pai->num_chaves++;
 
-    cout << "xuei " << sizeof(pai) << endl;
     commitNodetoDisk(no,no->diskOffset);
     commitNodetoDisk(novo, novo->diskOffset);
     commitNodetoDisk(pai, pai->diskOffset);
