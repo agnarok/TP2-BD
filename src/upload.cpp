@@ -5,7 +5,7 @@
 #include <vector>
 #include "definitions.h"
 #include "hashFile.h"
-
+#include "B-tree/btree.h"
 
 // para printar partes do csv.
 // sed -n '2635p' entrada.csv | awk -F ';' '{print $3 $4}'
@@ -83,6 +83,9 @@ class CsvReader {
   }
 };
 
+//obs, o getline aumenta o número de chars + 2 bytes a cada linha lida (CLRF)
+// nao rodar upload duas vezes sem apagar a arvore
+
 // o primeiro argumento de argv e o proprio arquivo
 int main(int argc, char const* argv[]) {
   cout << endl << argv[1] << endl;
@@ -92,16 +95,21 @@ int main(int argc, char const* argv[]) {
   }
   CsvReader reader(argv[1]);
   Line* line;
-  HashFile hash(true);
+  // HashFile hash(true);
+  ArvoreB<int> arvore(2,PRIMARY_INDEX_PATH);
+  unsigned int dataOffset;
   unsigned int col;
   while (!reader.isAtEndOfFile()) {
+    dataOffset = reader.fin.tellg();
+    // cout << "estou aqui no arquivo " << dataOffset << endl;
     line = reader.getNextFormattedLine();
-    if (!hash.insertItem(*line)) {
-      col++;
-    }
+    arvore.inserir(line->id, dataOffset);
+    // if (!hash.insertItem(*line)) {
+    //   col++;
+    // }
     delete line;
   }
   cout << "numcol: " << col << endl;
-  hash.closeFile();
+  // hash.closeFile();
   return 0;
 }

@@ -58,7 +58,7 @@ class ArvoreB {
 public:
     ArvoreB(int ordem, string filename);
 
-    void inserir(const T &chave);
+    void inserir(const T &chave, unsigned int dataOffset);
     
     // Desenha a árvore
     void desenhar() {
@@ -78,9 +78,9 @@ public:
 
     FILE *b_file;
 
-    void inserir(NoB<T> *no, NoB<T> *pai, const T &chave);
+    void inserir(NoB<T> *no, NoB<T> *pai, const T &chave, unsigned int dataOffset);
 
-    void dividir_no(NoB<T> *no, NoB<T> *pai);
+    void dividir_no(NoB<T> *no, NoB<T> *pai, unsigned int dataOffset);
 
     int buscar_chave_maior(NoB<T> *no, const T &chave);
 
@@ -90,7 +90,7 @@ public:
 
     void desenhar(NoB<T> *raiz, int nivel);
 
-    T busca(NoB<T> *no,const T &chave);
+    unsigned int busca(NoB<T> *no,const T &chave);
 
     void commitNodetoDisk(NoB<T> *no, unsigned int offset);
 
@@ -174,9 +174,9 @@ void ArvoreB<T>::deslocar_chaves(NoB<T> *no, int pos)
 
 // Função chamada pelo usuário para inserção
 template<typename T>
-void ArvoreB<T>::inserir(const T &chave)
+void ArvoreB<T>::inserir(const T &chave, unsigned int dataOffset)
 {
-    inserir(raiz, NULL, chave);
+    inserir(raiz, NULL, chave, dataOffset);
 }
 
 
@@ -184,31 +184,32 @@ void ArvoreB<T>::inserir(const T &chave)
 // árvore: privada, não pode ser utilizada pelo usuário
 template<typename T>
 void ArvoreB<T>::inserir(NoB<T> *no, NoB<T> *pai,
-        const T &chave)
+        const T &chave, unsigned int dataOffset)
 {
-
     int pos = buscar_chave_maior(no, chave);
     if (no->folha) {
+        cout << "inserindo " << chave << " em " << dataOffset << endl;
         deslocar_chaves(no, pos);
         no->chaves[pos] = chave;
         no->num_chaves++;
+        no->filhos[pos] = dataOffset;
         commitNodetoDisk(no,no->diskOffset);
     }
     else {
         NoB<T> nextNode;
         if(readNodefromDisk(&nextNode, no->filhos[pos])){
-            inserir(&nextNode, no, chave);
+            inserir(&nextNode, no, chave, dataOffset);
         }
     }
 
     if (no->num_chaves > max_chaves) {
-        dividir_no(no, pai);
+        dividir_no(no, pai, dataOffset);
     }
 }
 
 
 template<typename T>
-void ArvoreB<T>::dividir_no(NoB<T> *no, NoB<T> *pai)
+void ArvoreB<T>::dividir_no(NoB<T> *no, NoB<T> *pai, unsigned int dataOffset)
 {
     int i, j;
     int meio = no->num_chaves / 2;
@@ -227,7 +228,6 @@ void ArvoreB<T>::dividir_no(NoB<T> *no, NoB<T> *pai)
     }
 
     
-    //segfault aqui
     NoB<T> *novo = criar_no(no->folha);
     novo->diskOffset = getNextNodeOffset();
     commitNodetoDisk(novo, novo->diskOffset);
@@ -245,7 +245,7 @@ void ArvoreB<T>::dividir_no(NoB<T> *no, NoB<T> *pai)
             no->filhos[i] = novo->diskOffset;
         } else {
             // colocar dados
-            no->filhos[i] = -1;
+            no->filhos[i] = dataOffset;
         }
     }
 
@@ -317,16 +317,16 @@ NoB<T> *ArvoreB<T>::criar_no(bool folha)
 }
 
 template<typename T>
-T ArvoreB<T>::busca(NoB<T> *no,const T &chave){
+unsigned int ArvoreB<T>::busca(NoB<T> *no,const T &chave){
     int meio;
     int limitSup = no->num_chaves - 1;
     int limitInf = 0;
     while (limitInf<=limitSup){
         meio = (limitInf+limitSup)/2;
         if(chave == no->chaves[meio]){
-            return no->chaves[meio];
+            return no->filhos[meio];
         }
-        if(chave>no->chaves[meio]){
+        if(chave > no->chaves[meio]){
             limitInf = meio +1;
             // std::cout<< limitInf << " maior\n";
         } else{

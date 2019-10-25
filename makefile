@@ -13,6 +13,12 @@ btree:
 find: createFind
 	./findrec $(id)
 
+seek: createSeek
+	./seek1 $(id)
+
+createSeek:
+	g++ src/B-tree/seek1.cpp -o seek1
+
 createFind:
 	g++ src/findrec.cpp src/Block.cpp src/hashFile.cpp src/Line.cpp -o findrec
 
