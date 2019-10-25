@@ -176,7 +176,8 @@ void ArvoreB<T>::deslocar_chaves(NoB<T> *no, int pos)
 template<typename T>
 void ArvoreB<T>::inserir(const T &chave, unsigned int dataOffset)
 {
-    inserir(raiz, NULL, chave, dataOffset);
+    unsigned int dataBlockOffset = dataOffset / (unsigned int) BLOCK_SIZE;
+    inserir(raiz, NULL, chave, dataBlockOffset);
 }
 
 
