@@ -48,6 +48,7 @@ public:
     unsigned int filhos[ORDER_MAIN+2];
     T chaves[ORDER_MAIN+1];
     bool folha;
+    char dump[4000];
 };
 
 
@@ -293,7 +294,7 @@ ArvoreB<T>::ArvoreB(int ordem, string filePath)
         raiz->diskOffset = getNextNodeOffset();
         commitNodetoDisk(raiz,raiz->diskOffset);
     }
-
+    cout<< "Root sucess\n";
 }
 
 
