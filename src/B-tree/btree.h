@@ -63,7 +63,7 @@ public:
     
     // Desenha a árvore
     void desenhar() {
-        desenhar(raiz, 0);
+        desenhar(this->raizOffset, 0);
     }
 
     T busca(const T &chave){
@@ -89,7 +89,7 @@ public:
 
     NoB<T> *criar_no(bool folha);
 
-    void desenhar(NoB<T> *raiz, int nivel);
+    void desenhar(unsigned int offset, int nivel);
 
     unsigned int busca(NoB<T> *no,const T &chave);
 
@@ -122,20 +122,23 @@ int ArvoreB<T>::readNodefromDisk(NoB<T> *outputNode, unsigned int offset) {
 
 // Faz o desenho da árvore (arranjei por causa da monitoria hehehehe é top)
 template<typename T>
-void ArvoreB<T>::desenhar(NoB<T> *raiz, int nivel)
+void ArvoreB<T>::desenhar(unsigned int offset, int nivel)
 {
+
+    NoB<T> no;
+    readNodefromDisk(&no, offset);
     // Insere espaços antes do nó
     printf("%*s", nivel * 4, "");
 
     // Desenha o nó
-    raiz->imprimir_no();
+    no.imprimir_no();
 
     // Se não for uma folha, então chama recursivamente para
     // desenhar os filhos
-    if (!raiz->folha) {
-        for (int i = 0; i <= raiz->num_chaves; i++) {
-            if(raiz->filhos[i]!=NULL){
-                desenhar(raiz->filhos[i], nivel + 1);
+    if (!no.folha) {
+        for (int i = 0; i <= no.num_chaves; i++) {
+            if(no.filhos[i] != -1){
+                desenhar(no.filhos[i], nivel + 1);
             }
         }
     }
