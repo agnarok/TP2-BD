@@ -91,14 +91,14 @@ int main(int argc, char const* argv[]) {
   Line* line;
   HashFile hash(true);
   ArvoreB<int> arvore(2,PRIMARY_INDEX_PATH);
-  ArvoreBSec<char[300]> secondaryIndex(2,SECONDARY_INDEX_PATH);
+  // ArvoreBSec<char[300]> secondaryIndex(2,SECONDARY_INDEX_PATH);
 
   unsigned long long int dataOffset;
   while (!reader.isAtEndOfFile()) {
     dataOffset = reader.fin.tellg();
     line = reader.getNextFormattedLine();
     arvore.inserir(line->id, dataOffset);
-    secondaryIndex.inserir(line->titulo, dataOffset);
+    // secondaryIndex.inserir(line->titulo, dataOffset);
     if (!hash.insertItem(*line)) {
     }
     delete line;

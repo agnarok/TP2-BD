@@ -45,7 +45,7 @@ public:
     // array of block offset integers
     unsigned int diskOffset;
     int num_chaves;
-    unsigned long long int filhos[SECONDARY_ORDER_MAIN+2];
+    unsigned int filhos[SECONDARY_ORDER_MAIN+2];
     T chaves[SECONDARY_ORDER_MAIN+1];
     bool folha;
 
