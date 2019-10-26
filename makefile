@@ -12,10 +12,10 @@ btree:
 
 
 find: createFind
-	./findrec $(id)
+	./findrec $(id)  && rm -rf findrec
 
 seek1: createSeek
-	./seek1 $(id)
+	./seek1 $(id) && rm -rf seek1
 
 seek2: createSeek2
 	./seek2 $(titu)
