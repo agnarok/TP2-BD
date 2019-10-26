@@ -8,10 +8,6 @@
 #include "B-tree/btree.h"
 #include "B-tree/secondary.h"
 
-// para printar partes do csv.
-// sed -n '2635p' entrada.csv | awk -F ';' '{print $3 $4}'
-// make all data=sample_small.csv
-
 using namespace std;
 
 class CsvReader {
@@ -84,11 +80,7 @@ class CsvReader {
   }
 };
 
-//obs, o getline aumenta o número de chars + 2 bytes a cada linha lida (CLRF)
-// nao rodar upload duas vezes sem apagar a arvore
-// BUGGGGGGGGGGGGGGGGGGGGG -> O BUSCA TA CAGADO DA ARVORE
 
-// o primeiro argumento de argv e o proprio arquivo
 int main(int argc, char const* argv[]) {
   cout << endl << argv[1] << endl;
   if (argc == 1) {
@@ -99,22 +91,17 @@ int main(int argc, char const* argv[]) {
   Line* line;
   HashFile hash(true);
   ArvoreB<int> arvore(2,PRIMARY_INDEX_PATH);
-  // ArvoreBSec<char[300]> secondaryIndex(2,SECONDARY_INDEX_PATH);
+  ArvoreBSec<char[300]> secondaryIndex(2,SECONDARY_INDEX_PATH);
 
   unsigned long long int dataOffset;
-  unsigned int col;
   while (!reader.isAtEndOfFile()) {
     dataOffset = reader.fin.tellg();
     line = reader.getNextFormattedLine();
-    // cout << line->titulo << endl;
     arvore.inserir(line->id, dataOffset);
-    // secondaryIndex.inserir(line->titulo, dataOffset);
+    secondaryIndex.inserir(line->titulo, dataOffset);
     if (!hash.insertItem(*line)) {
-      col++;
     }
     delete line;
   }
-  cout << "numcol: " << col << endl;
-  // hash.closeFile();
   return 0;
 }

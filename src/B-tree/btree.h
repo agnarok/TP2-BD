@@ -294,14 +294,11 @@ ArvoreB<T>::ArvoreB(int ordem, string filePath)
         fwrite(&this->raizOffset,sizeof(this->raizOffset), 1, this->raizOffsetFile);
     }
     fread(&(this->raizOffset),sizeof(this->raizOffset),1,this->raizOffsetFile);
-    cout<< "raiz offset "<<this->raizOffset << endl;
     if(!readNodefromDisk(raiz,this->raizOffset)) {
-        cout << "criar" << endl;
         raiz = criar_no(true);
         raiz->diskOffset = getNextNodeOffset();
         commitNodetoDisk(raiz,raiz->diskOffset);
     }
-    cout<< "Root sucess\n";
 }
 
 

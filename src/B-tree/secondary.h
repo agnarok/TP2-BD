@@ -230,7 +230,6 @@ void ArvoreBSec<T>::dividir_no(NoBSec<T> *no, NoBSec<T> *pai, unsigned int dataO
         raiz->filhos[0] = no->diskOffset;
         commitNodetoDisk(raiz, raiz->diskOffset);
         this->raizOffset = raiz->diskOffset;
-        cout << "OFFSET : " << this->raizOffset << endl;
         fseek(this->raizOffsetFile, 0, SEEK_SET);
         fwrite(&this->raizOffset,sizeof(this->raizOffset), 1, this->raizOffsetFile);
     }
@@ -249,11 +248,8 @@ void ArvoreBSec<T>::dividir_no(NoBSec<T> *no, NoBSec<T> *pai, unsigned int dataO
     novo->filhos[j] = no->filhos[i];
 
     // Aqui sera feita a alteração para transformar em Arvore B+
-    cout << "num " << no->num_chaves << endl;
     for (int i = meio + 1; i <= no->num_chaves; i++) { //Nó da esquerda
         if(i==max_chaves && no->folha){
-            cout << "teste " << no->filhos[i];
-            cout << " teste " << no->filhos[i-1] << endl;
             no->filhos[i] = novo->diskOffset;
         } else {
             // colocar dados
@@ -304,14 +300,11 @@ ArvoreBSec<T>::ArvoreBSec(int ordem, string filePath)
     } else {
         fread(&(this->raizOffset),sizeof(this->raizOffset),1,this->raizOffsetFile);
     }
-    cout<< "raiz offset "<<this->raizOffset << endl;
     if(!readNodefromDisk(raiz,this->raizOffset)) {
-        cout << "criar" << endl;
         raiz = criar_no(true);
         raiz->diskOffset = getNextNodeOffset();
         commitNodetoDisk(raiz,raiz->diskOffset);
     }
-    cout<< "Root sucess\n";
 }
 
 
@@ -321,8 +314,6 @@ NoBSec<T> *ArvoreBSec<T>::criar_no(bool folha)
 {
     NoBSec<T> *novo = new NoBSec<T>;
 
-    // novo->chaves = new T[max_chaves + 1];
-    // novo->filhos = new unsigned int [max_chaves + 2];
 
     for (int i = 0; i <= max_chaves + 1; i++) {
         novo->filhos[i] = -1;
@@ -342,7 +333,6 @@ unsigned int ArvoreBSec<T>::busca(NoBSec<T> *no,const T &chave){
     NoBSec<T> nextNode;
     while (limitInf<=limitSup){
         meio = (limitInf+limitSup)/2;
-        cout << "chave " << no->chaves[meio] << endl;
         if(strcmp(chave, no->chaves[meio]) == 0){
             if (no->folha) {
                 return no->filhos[meio];
@@ -350,10 +340,8 @@ unsigned int ArvoreBSec<T>::busca(NoBSec<T> *no,const T &chave){
         }
         if(strcmp(chave, no->chaves[meio]) > 0){
             limitInf = meio +1;
-            // std::cout<< limitInf << " maior\n";
         } else{
             limitSup = meio -1;
-            // std::cout << limitSup <<" menor\n";
         }
     }
     if(no->filhos[limitInf]==-1){
